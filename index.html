@@ -108,6 +108,66 @@ table.pz{width:100%;border-collapse:collapse;table-layout:fixed}
 .dt-block.up::before{background:#8CB86B} .dt-block.down::before{background:#D89A8A} .dt-block.flat::before{background:#D8BC85}
 .dt-block h4{font-size:13.5px;color:#55503F;margin-bottom:4px}
 .dt-block p{font-size:13.5px;color:#6B6557;text-align:justify}
+/* 五行能量条 */
+.wxbar{margin-top:12px}
+.wxbar .row{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px}
+.wxbar .dot{width:10px;height:10px;border-radius:50%;flex:none}
+.wxbar .nm{width:60px;color:#6B6557}
+.wxbar .trk{flex:1;height:10px;background:#F1EDE2;border-radius:5px;overflow:hidden}
+.wxbar .fil{height:100%;border-radius:5px;transition:width .9s}
+.wxbar .pc{width:38px;text-align:right;color:#A89F8B}
+.wx-missing{margin-top:9px;font-size:11.5px;color:#C08A5A;background:#FBF4E8;border-radius:8px;padding:4px 10px;display:inline-block}
+/* 性格画像 */
+.persona-head{display:flex;align-items:center;gap:14px}
+.persona-gan{width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#FAF3E4,#F1E2C6);display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:700;flex:none}
+.persona-title{font-size:16px;font-weight:700}
+.persona-sub{font-size:12px;color:var(--sub);margin-top:1px}
+.persona-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+.persona-tags span{font-size:12px;background:#F5F1E6;color:#6B6557;border-radius:999px;padding:3px 12px}
+.persona-desc{margin-top:10px;font-size:13.5px;color:#6B6557;text-align:justify}
+/* 四维指数 */
+.idx-row{margin-top:13px}
+.idx-head{display:flex;align-items:baseline;font-size:13.5px}
+.idx-head .nm{font-weight:600}
+.idx-head .star{color:#E0B45C;margin-left:8px;font-size:12px;letter-spacing:1px}
+.idx-head .sc{margin-left:auto;font-size:18px;font-weight:700}
+.idx-trk{height:11px;border-radius:6px;background:#F1EDE2;margin-top:6px;overflow:hidden}
+.idx-fil{height:100%;border-radius:6px;width:0;transition:width 1s}
+.idx-note{font-size:12px;color:#8B8578;margin-top:5px}
+/* 今日运势 */
+.today-grid{display:flex;gap:10px;margin-top:4px}
+.today-gz{flex:1;text-align:center;background:#FBF8F1;border-radius:12px;padding:9px 6px}
+.today-gz .t{font-size:11px;color:var(--sub)}
+.today-gz .v{font-size:19px;font-weight:700;margin-top:2px}
+.today-stars{text-align:center;margin:9px 0 1px;font-size:15px;color:#E0B45C;letter-spacing:2px}
+.yiji{display:flex;gap:10px;margin-top:10px}
+.yiji .box{flex:1;background:#FBF9F4;border-radius:12px;padding:9px 12px;font-size:12.5px;color:#6B6557}
+.yiji .box b{display:block;font-size:12px;margin-bottom:3px}
+.yiji .yi b{color:#5F8A5A}.yiji .ji b{color:#B4614B}
+.luck-line{margin-top:9px;font-size:12px;color:#8B8578;display:flex;gap:7px;flex-wrap:wrap}
+.luck-line span{background:#F5F1E6;border-radius:999px;padding:2px 11px}
+/* 流年速览 */
+.ln-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:4px}
+.ln-cell{background:#FBF9F4;border-radius:12px;padding:9px 4px;text-align:center;font-size:10.5px;color:#8B8578}
+.ln-cell .y{font-weight:600;color:#55503F;font-size:11.5px}
+.ln-cell .gz{font-size:15px;font-weight:700;margin:2px 0}
+.ln-cell .lnss{font-size:10px}
+.ln-note{margin-top:9px;font-size:12px;color:#8B8578;background:#FBF8F1;border-radius:10px;padding:7px 10px}
+/* 缘分开运 */
+.pair-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.pair-chip{flex:1;min-width:150px;background:#FBF8F1;border-radius:12px;padding:10px 12px;font-size:12.5px;color:#6B6557}
+.pair-chip b{display:block;color:#55503F;margin-bottom:3px;font-size:13px}
+.pair-chip .zodiac{font-size:15px;font-weight:700;color:var(--gold-dk)}
+.luck-kv{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
+.luck-kv div{flex:1;min-width:100px;background:#FBF9F4;border-radius:12px;padding:8px 12px;font-size:12.5px;color:#6B6557}
+.luck-kv b{display:block;font-size:11.5px;color:var(--sub);font-weight:500;margin-bottom:2px}
+.luck-adv{margin-top:10px;font-size:12.5px;color:#8A6D3B;background:#FBF4E8;border-radius:10px;padding:8px 12px}
+/* 总评 */
+.verdict{margin-top:14px;background:linear-gradient(135deg,#FBF5E8,#F6ECDA);border:1px solid #EDD9B0;border-radius:16px;padding:16px;text-align:center}
+.verdict .type{font-size:12.5px;color:var(--gold-dk);letter-spacing:3px}
+.verdict .quote{font-size:16px;font-weight:700;margin-top:6px;line-height:1.7;color:#4A4232}
+.verdict .kw{display:flex;gap:7px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.verdict .kw span{font-size:12px;background:#fff;border:1px solid #EDD9B0;color:#8A6D3B;border-radius:999px;padding:2px 12px}
 /* 免责 & 底部 */
 .disclaimer{margin-top:16px;text-align:center;font-size:11.5px;color:#B3AC9C;line-height:1.8}
 .btn-again{display:block;margin:18px auto 0;border:1.5px solid #E5DECF;background:#FFF;border-radius:999px;padding:8px 26px;font-size:13.5px;color:#8B8578;cursor:pointer;font-family:inherit}
@@ -170,6 +230,11 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:#CFC9BA}
     <div class="celeb-bday" id="celebBday"></div>
   </div>
 
+  <div class="card" id="personaCard">
+    <h2 class="sec">性格画像<span class="tag">日主人格</span></h2>
+    <div id="personaBody"></div>
+  </div>
+
   <div class="card">
     <h2 class="sec">四柱排盘</h2>
     <div class="stats3">
@@ -178,9 +243,24 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:#CFC9BA}
       <div class="st"><div class="k">忌神五行</div><div class="v" id="stAvoid" style="font-size:15px;letter-spacing:2px">—</div></div>
     </div>
     <div id="pzTable"></div>
-    <div class="legend" id="wxLegend"></div>
+    <div class="wxbar" id="wxBar"></div>
     <div class="qiyun" id="qiYun"></div>
     <div class="pz-note" id="pzNote"></div>
+  </div>
+
+  <div class="card">
+    <h2 class="sec">人生四维指数<span class="tag">娱乐向测算</span></h2>
+    <div id="idxBody"></div>
+  </div>
+
+  <div class="card">
+    <h2 class="sec">今日运势<span class="tag" id="todayDate"></span></h2>
+    <div id="todayBody"></div>
+  </div>
+
+  <div class="card">
+    <h2 class="sec">流年速览<span class="tag">近五年</span></h2>
+    <div id="lnBody"></div>
   </div>
 
   <div class="card">
@@ -191,6 +271,13 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:#CFC9BA}
     </div>
     <div id="dayunList"></div>
   </div>
+
+  <div class="card">
+    <h2 class="sec">缘分与开运<span class="tag">贵人 · 速配 · 幸运物</span></h2>
+    <div id="pairBody"></div>
+  </div>
+
+  <div class="verdict" id="verdictBox"></div>
 
   <p class="disclaimer">以上内容为传统命理学说的算法演绎，属传统文化视角的<br>文化娱乐参考，不构成任何医疗、投资或人生决策建议。</p>
   <button class="btn-again" id="againBtn">↺ 换个人看看</button>
@@ -301,7 +388,7 @@ function paiPan(y,m,d,hourIdx,gender){
     dayuns.push({i,gz:GAN[idx%10]+ZHI[idx%12],gan:idx%10,zhi:idx%12,age1:a1,age2:a1+9,sy,ey:sy+9,
       isCur:curYear>=sy&&curYear<=sy+9});
   }
-  return {pillars,dGan,dZhi,yGan,yZhi,baziYear,score,strength,sTxt,fav,avoid,weakLike,startAge,forward,dayuns,hasHour,jieName:JIEQI[last.t]};
+  return {pillars,dGan,dZhi,yGan,yZhi,baziYear,score,strength,sTxt,fav,avoid,weakLike,startAge,forward,dayuns,hasHour,jieName:JIEQI[last.t],gender};
 }
 
 /* ================= 地支关系 & 神煞 ================= */
@@ -467,6 +554,137 @@ function plainText(p,dy,a){
   return {moodTxt,blocks};
 }
 
+/* ================= 增值模块：性格/指数/今日/流年/缘分/总评 ================= */
+const GAN_IMGY=[
+['参天大树','骨子里的向上心极强，认准方向就一路生长；直来直去，最不喜欢绕弯子'],
+['藤蔓花草','柔韧灵活，最擅长借势而上、见缝扎根；共情力强、审美好，人缘不差'],
+['太阳之火','热情外放，走到哪都自带光源；豪爽大方，就是偶尔三分钟热度'],
+['灯烛之火','细腻温润，照亮身边一小片人就满足；心思重，吃软不吃硬'],
+['城墙厚土','稳如老墙，讲信用、扛得住事；认定的事，十头牛也拉不回'],
+['田园之土','包容、会照顾人，低调务实；心里有杆秤，只是懒得说'],
+['刀剑之金','干脆利落，讲义气、带侠气；宁折不弯——容易得罪人，也容易被人记住'],
+['珠玉之金','天生在意质感与形象，敏感细腻、外冷内热；对美和细节的挑剔是天赋'],
+['江河之水','脑子活、格局大，敢想敢闯；一辈子都闲不住，注定奔涌'],
+['雨露之水','聪明通透、心思绵密，擅长暗中使劲；外柔内韧，润物无声']];
+const SS_PERSONA={'比肩':'独立担当型','劫财':'豪爽仗义型','食神':'才华享受型','伤官':'锋芒才气型','正财':'踏实守成型','偏财':'机会嗅觉型','七杀':'狠劲抗压型','正官':'规矩名分型','正印':'学识靠山型','偏印':'深度钻研型'};
+const SS_YIJI={
+'比肩':['团队协作、运动流汗、见老友','替人担保、借贷、口头承诺'],
+'劫财':['果断出手、砍价谈判','冲动消费、合伙掏钱'],
+'食神':['美食聚会、创作输出、晒作品','暴饮暴食、拖延正事'],
+'伤官':['表达提案、头脑风暴、整活','怼人较真、夸下海口'],
+'偏财':['谈钱谈合作、副业外快','All in 投机、裸辞豪赌'],
+'正财':['记账理账、踏实办事、复盘','好高骛远、频繁跳槽'],
+'正官':['面试述职、走流程办事、拜访上级','越级冒进、钻空子'],
+'七杀':['攻坚克难、健身出汗、立规矩','硬扛硬拼、熬夜爆肝'],
+'偏印':['研究学习、独处充电、看玄学','熬夜多思、封闭自己'],
+'正印':['读书签约、拜访长辈、考证','敷衍了事、鸽别人']};
+const LN_NOTE={'比肩':'并肩之年：合作与同台竞技并存','劫财':'分耗之年：捂紧钱包，防借防损','食神':'口福创作之年：输出见喜','伤官':'锋芒之年：出彩，也易招口舌','正财':'正财之年：一分耕耘一分收获','偏财':'机会之年：副业外快活跃','七杀':'压力之年：扛过去就是台阶','正官':'名分之年：职位名分有望落定','正印':'资历之年：考试证书贵人都顺','偏印':'深钻之年：冷门专业出成绩'};
+const ZODIAC=['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
+const TIANYI=[[1,7],[0,8],[11,9],[11,9],[1,7],[0,8],[1,7],[2,6],[3,5],[3,5]]; // 天乙贵人（日干→支）
+const WX_COLOR=['草木绿','珊瑚红','姜黄棕','白银灰','雾霾蓝'];
+const WX_NUM=[[3,8],[2,7],[5,0],[4,9],[1,6]];
+const WX_DIR=['正东','正南','西南·东北','正西','正北'];
+const WX_ADV=['多亲近绿色系与草木、常去公园绿地、家里养点绿植','多晒太阳、用红橙暖色、保持运动出汗的节奏','多穿大地色系、佩戴陶瓷玉石类、饮食规律养脾胃','多穿白色金属色、佩戴金银饰品、练练肺活量','多亲近水、用蓝黑色系、早睡多喝水养肾'];
+const WX_ORGAN=['肝胆','心脑血','脾胃','肺与呼吸','肾与泌尿'];
+
+function tenGodCount(p){
+  const c={};
+  p.pillars.forEach((pl,i)=>{
+    if(i!==2)add(pl.tenShen);
+    CANG[pl.zhi].forEach(cg=>add(shiShen(p.dGan,cg)));
+  });
+  function add(s){c[s]=(c[s]||0)+1}
+  return c;
+}
+function wxEnergy(p){
+  const c=[0,0,0,0,0];
+  p.pillars.forEach(pl=>{
+    c[ganWx(pl.gan)]+=1;
+    CANG[pl.zhi].forEach((cg,i)=>c[ganWx(cg)]+=[1,.4,.2][i]||.2);
+  });
+  return c;
+}
+function personaView(p){
+  const tg=tenGodCount(p);
+  const top=Object.entries(tg).sort((a,b)=>b[1]-a[1]).slice(0,2);
+  const imgy=GAN_IMGY[p.dGan];
+  const temper=p.strength==='weak'?'底色偏敏感务实，遇事先想稳，属于"谋定而后动"的人。'
+    :p.strength==='strong'?'底色偏自信有主见，遇事先干再说，天然的行动派。'
+    :'底色收放自如，既能冲也能稳，属于"看场合切换模式"的人。';
+  const tags=top.map(([k,n])=>`${SS_PERSONA[k]}·${k}旺`);
+  if(!top.some(([k])=>k==='比肩'||k==='劫财'))tags.push('独当一面');
+  return {imgy,temper,tags:tags.slice(0,3),monthZhi:ZHI[p.pillars[1].zhi]};
+}
+function indexesView(p){
+  const tg=tenGodCount(p),g=n=>tg[n]||0,dw=ganWx(p.dGan);
+  const cai=g('正财')+g('偏财'),guan=g('正官')+g('七杀'),yin=g('正印')+g('偏印');
+  const caiW=(dw+2)%5,guanW=(dw+3)%5,yinW=(dw+4)%5;
+  const clamp=v=>Math.max(52,Math.min(93,Math.round(v)));
+  const wealth=clamp(62+cai*4.5+(p.fav.includes(caiW)?9:0)+(p.avoid.includes(caiW)?-5:0)+(p.strength==='strong'?7:0));
+  const career=clamp(60+guan*4+yin*2.5+(p.fav.includes(guanW)||p.fav.includes(yinW)?9:0)+(p.avoid.includes(guanW)?-4:0));
+  const yiXing=p.gender==='男'?cai:guan;
+  const hasTH=p.pillars.some(pl=>pl.zhi===taoHua(p.dZhi)||pl.zhi===taoHua(p.yZhi));
+  const love=clamp(57+yiXing*5+(hasTH?11:0)+(p.pillars.length>=4?3:0));
+  const en=wxEnergy(p),miss=en.filter(c=>c<0.01).length,weak=en.filter(c=>c>=0.01&&c<0.6).length;
+  const health=clamp(66+(p.strength==='strong'?9:p.strength==='weak'?-2:4)-miss*7-weak*2);
+  const N=v=>v>=78?'good':v>=66?'mid':'low';
+  const notes=[
+    [wealth,wealth>=78?'财星成局：赚钱的嗅觉和机会都不缺，该练的是"留钱"的本事':wealth>=66?'财气中平：不缺赚钱的路子，缺的是把一条路走深':'财星偏弱或受制：正财稳扎稳打好过搏机会，先攒本事再谈进项'],
+    [career,career>=78?'官印相扶：名分与贵人运在线，适合往体制、平台、专业序列里走':career>=66?'事业中平：一门扎实手艺＋贵人提携，是最稳的组合拳':'官杀不显：自由职业或自己当家，比按部就班更出活'],
+    [love,love>=78?'异性星旺＋桃花入命：感情戏从来不缺，记得挑对人、不挑热闹':love>=66?'感情中平：缘分随阶段起伏，主动一点故事就多一段':'桃花偏淡：感情上慢热，宁缺毋滥反而是你的护身符'],
+    [health,health>=78?'五行流通、底子在线：注意别透支，规律即是补':health>=66?'底子中平：压力大的年份留意睡眠与肠胃':'五行有缺、身偏弱：规律作息比任何进补都管用']
+  ];
+  const organTip=(miss||weak)?`弱项提示：${en.map((c,i)=>({c,i})).filter(o=>o.c<0.6).slice(0,2).map(o=>WX[o.i]+`（${WX_ORGAN[o.i]}）`).join('、')} 相对偏弱，作息上多留心。`:'';
+  return {notes:notes.map(([v,t])=>({v,t,lv:N(v)})),organTip};
+}
+function todayView(p){
+  const now=new Date();
+  const t=dayGZidx(now.getFullYear(),now.getMonth()+1,now.getDate());
+  const tg=t%10,w=ganWx(tg),ss=shiShen(p.dGan,tg);
+  const fav=p.fav.includes(w),avd=p.avoid.includes(w);
+  const stars=fav?5:avd?2:3.5;
+  const starsTxt='★'.repeat(Math.floor(stars))+(stars%1?'☆':'');
+  const moodTxt=fav?'顺风日：今日五行帮你，重要的事往前排':avd?'承压日：今日五行克你，宜守不宜攻，大事缓一缓':'平稳日：不功不过，按部就班就是胜利';
+  return {gz:GAN[tg]+ZHI[t%12],ss,starsTxt,moodTxt,tgIdx:tg,zhiIdx:t%12,
+    yi:(SS_YIJI[ss]||SS_YIJI['正官'])[0],ji:(SS_YIJI[ss]||SS_YIJI['正官'])[1],
+    dateStr:`${now.getMonth()+1}月${now.getDate()}日`,
+    color:WX_COLOR[p.fav[0]],nums:WX_NUM[p.fav[0]]};
+}
+function liunianView(p){
+  const y0=new Date().getFullYear(),list=[];
+  for(let y=y0;y<y0+5;y++){
+    const idx=((y-1984)%60+60)%60,gan=idx%10;
+    const ss=shiShen(p.dGan,gan);
+    list.push({y,gz:GAN[gan]+ZHI[idx%12],ss,shun:p.fav.includes(ganWx(gan)),note:LN_NOTE[ss],gi:gan,zi:idx%12});
+  }
+  return list;
+}
+function luckPairView(p){
+  const gui=TIANYI[p.dGan].map(z=>ZODIAC[z]);
+  const grp=SANHE.find(g=>g.includes(p.dZhi));
+  const qin=[...new Set([...grp.filter(z=>z!==p.dZhi),LIUHE[p.dZhi]])].map(z=>ZODIAC[z]);
+  const f0=p.fav[0];
+  const en=wxEnergy(p);
+  const weakest=en.indexOf(Math.min(...en));
+  return {gui,qin,color:WX_COLOR[f0],nums:WX_NUM[f0],dir:WX_DIR[f0],adv:WX_ADV[weakest],weakName:WX[weakest]};
+}
+function verdictView(p){
+  const sc=dy=>{const a=analyzeDayun(p,dy);return (a.qianShun?1:0)+(a.houShun?1:0)};
+  const front=p.dayuns.slice(0,3).reduce((s,d)=>s+sc(d),0);
+  const back=p.dayuns.slice(3).reduce((s,d)=>s+sc(d),0);
+  let type,quote;
+  if(front>=5&&back>=6){type='一路稳顺型';quote='一生大运起伏不大、稳中有进。不求暴起暴落，胜在每一步都踩得实——细水长流，就是你的主线剧本。';}
+  else if(front>=5){type='少年得志型';quote='早年几步大运走得顺，起点常高人半头。记得在顺境里攒本事——运气会波动，本事不会。';}
+  else if(front<=2&&back>=6){type='大器晚成型';quote='前半程多是铺垫与练手，真正的收成在后头。你是越老越值钱的命，别急着在年轻时争一时胜负。';}
+  else if(front+back>=8){type='厚积薄发型';quote='运势有起有伏：顺时攒粮、滞时练兵。中年后往往有一步关键大运——抓得住，前面吃的苦全是本金。';}
+  else if(back>=5){type='中年发力型';quote='早年在练级，中年开始掉装备：三十岁往后，每一步都比前一步顺。别被起跑线吓住，你的最佳剧本在中段。';}
+  else{type='逆流而上型';quote='大运顺少滞多，拿到的是"hard 模式"剧本。但命硬的人从不靠运气赢——你练出来的本事，谁也拿不走。';}
+  const tg=tenGodCount(p);
+  const top=Object.entries(tg).sort((a,b)=>b[1]-a[1])[0];
+  const kw=[GAN_IMGY[p.dGan][0],`${top[0]}最旺`,`喜${p.fav.map(w=>WX[w]).join('')}`];
+  return {type,quote,kw};
+}
+
 /* ================= 名人档案 ================= */
 const CELEBS=[
   {n:'黄仁勋',d:'1963-02-17',g:'男',t:'黄仁勋（Jensen Huang）为 NVIDIA 联合创始人兼首席执行官，主导公司从图形处理器向人工智能计算平台转型，被视为全球 AI 浪潮的核心推手之一。'},
@@ -522,7 +740,14 @@ function render(name,dateStr,hourIdx){
     <tr><td class="lbl">藏干</td>${rowCG}</tr>
     <tr><td class="lbl">纳音</td>${rowNY}</tr>
   </table>`;
-  $('wxLegend').innerHTML=WX.map((w,i)=>`<span><i style="background:${WXHEX[i]}"></i>${w}</span>`).join('');
+  /* 五行能量条 */
+  const en=wxEnergy(p),tot=en.reduce((a,b)=>a+b,0)||1;
+  const lackTxt=[],weakTxt=[];
+  en.forEach((c,i)=>{if(c<0.01)lackTxt.push(WX[i]);else if(c<0.6)weakTxt.push(WX[i]);});
+  let wxTip='';
+  if(lackTxt.length)wxTip=`五行缺${lackTxt.join('、')}——可借${lackTxt.map(w=>WX_COLOR[WX.indexOf(w)]).join('、')}的色系与方位补气场`;
+  else if(weakTxt.length)wxTip=`${weakTxt.join('、')}偏弱——日常可多亲近对应色系`;
+  $('wxBar').innerHTML=WX.map((w,i)=>`<div class="row"><span class="dot" style="background:${WXHEX[i]}"></span><span class="nm" style="${p.fav.includes(i)?'color:#A9834A;font-weight:600':''}">${w}${p.fav.includes(i)?'·喜':''}</span><div class="trk"><div class="fil" style="width:${Math.max(3,Math.round(en[i]/tot*100))}%;background:${WXHEX[i]}"></div></div><span class="pc">${Math.round(en[i]/tot*100)}%</span></div>`).join('')+(wxTip?`<div class="wx-missing">${wxTip}</div>`:'');
   $('qiYun').innerHTML=`出生后约 <b>${p.startAge} 岁</b> 起运（${p.forward?'顺行':'逆行'}，${p.jieName}后${p.forward?'顺数':'逆数'}至${p.forward?'下一':'上一'}节气折算），行运十载一换。`;
   $('pzNote').textContent=hourIdx>=0?'四柱俱全 · 按出生时辰排时柱':'按三柱推 · 时辰未知（时柱不计入旺衰与大运参照）';
   /* 大运 */
@@ -559,6 +784,57 @@ function render(name,dateStr,hourIdx){
     list.appendChild(item);
     if(dy.isCur)setTimeout(()=>{item.classList.add('open');item.scrollIntoView({block:'center'});},350);
   });
+  /* 性格画像 */
+  const dw=ganWx(p.dGan), pv=personaView(p);
+  $('personaBody').innerHTML=`
+    <div class="persona-head">
+      <div class="persona-gan ${WXCLS[dw]}">${GAN[p.dGan]}</div>
+      <div><div class="persona-title">${pv.imgy[0]} · ${p.sTxt}</div>
+      <div class="persona-sub">日主${GAN[p.dGan]}${WX[dw]}，生于${pv.monthZhi}月</div></div>
+    </div>
+    <div class="persona-desc">你是「${pv.imgy[0]}」——${pv.imgy[1]}。${pv.temper}</div>
+    <div class="persona-tags">${pv.tags.map(t=>`<span>${t}</span>`).join('')}</div>`;
+  /* 四维指数 */
+  const iv=indexesView(p);
+  const IDX_META=[['💰 财富指数','#C9A227'],['💼 事业指数','#5B8DB8'],['♡ 桃花指数','#C96A8A'],['🌿 健康指数','#5F8A5A']];
+  $('idxBody').innerHTML=iv.notes.map((n,i)=>`
+    <div class="idx-row">
+      <div class="idx-head"><span class="nm">${IDX_META[i][0]}</span><span class="star">${'★★★★★'.slice(0,Math.max(2,Math.round(n.v/20)))}</span><span class="sc" style="color:${IDX_META[i][1]}">${n.v}</span></div>
+      <div class="idx-trk"><div class="idx-fil" style="background:${IDX_META[i][1]}" data-w="${n.v}"></div></div>
+      <div class="idx-note">${n.t}</div>
+    </div>`).join('')+(iv.organTip?`<div class="idx-note" style="color:#B4614B;margin-top:10px">${iv.organTip}</div>`:'');
+  setTimeout(()=>document.querySelectorAll('.idx-fil').forEach(el=>el.style.width=el.dataset.w+'%'),80);
+  /* 今日运势 */
+  const tv=todayView(p);
+  $('todayDate').textContent=tv.dateStr;
+  $('todayBody').innerHTML=`
+    <div class="today-grid">
+      <div class="today-gz"><div class="t">今日干支</div><div class="v"><span class="${WXCLS[ganWx(tv.tgIdx)]}">${GAN[tv.tgIdx]}</span><span class="${WXCLS[zhiWx[tv.zhiIdx]]}">${ZHI[tv.zhiIdx]}</span></div></div>
+      <div class="today-gz"><div class="t">今日十神</div><div class="v" style="font-size:16px">${tv.ss}</div></div>
+    </div>
+    <div class="today-stars">${tv.starsTxt}</div>
+    <div style="text-align:center;font-size:12.5px;color:#6B6557">${tv.moodTxt}</div>
+    <div class="yiji"><div class="box yi"><b>宜</b>${tv.yi}</div><div class="box ji"><b>忌</b>${tv.ji}</div></div>
+    <div class="luck-line"><span>幸运色 · ${tv.color}</span><span>幸运数字 · ${tv.nums.join('、')}</span></div>`;
+  /* 流年速览 */
+  const lns=liunianView(p);
+  $('lnBody').innerHTML=`<div class="ln-grid">${lns.map(l=>`
+    <div class="ln-cell"><div class="y">${l.y}</div><div class="gz"><span class="${WXCLS[ganWx(l.gi)]}">${GAN[l.gi]}</span><span class="${WXCLS[zhiWx[l.zi]]}">${ZHI[l.zi]}</span></div><div class="lnss">${l.ss}<br><span style="color:${l.shun?'#6F9B4F':'#A89F8B'}">${l.shun?'顺':'滞'}</span></div></div>`).join('')}</div>
+    <div class="ln-note">${lns[0].y} 年走 <b>${lns[0].ss}</b> 流年：${lns[0].note.split('：')[1]||lns[0].note}。顺滞按流年天干与喜用推得，仅供把玩。</div>`;
+  /* 缘分开运 */
+  const lp=luckPairView(p);
+  $('pairBody').innerHTML=`
+    <div class="pair-row">
+      <div class="pair-chip"><b>天乙贵人属相</b><span class="zodiac">${lp.gui.join('、')}</span><br>遇到难事，这两个属相的人常能拉你一把</div>
+      <div class="pair-chip"><b>三合六合 · 亲和属相</b><span class="zodiac">${lp.qin.join('、')}</span><br>相处天然舒服，是合作与婚配的"顺毛"体质</div>
+    </div>
+    <div class="luck-kv">
+      <div><b>幸运色</b>${lp.color}</div><div><b>幸运数字</b>${lp.nums.join('、')}</div><div><b>幸运方位</b>${lp.dir}</div>
+    </div>
+    <div class="luck-adv">开运小建议：命局中${lp.weakName}的能量最弱——${lp.adv}。</div>`;
+  /* 总评 */
+  const vd=verdictView(p);
+  $('verdictBox').innerHTML=`<div class="type">—— ${vd.type} ——</div><div class="quote">${vd.quote}</div><div class="kw">${vd.kw.map(k=>`<span>${k}</span>`).join('')}</div>`;
   $('result').scrollIntoView({behavior:'smooth'});
 }
 function validate(){
