@@ -205,6 +205,20 @@ table.pz{width:100%;border-collapse:collapse;table-layout:fixed}
 .hh-item .v{flex:none;max-width:150px;font-size:11px;color:#8B8578;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hh-tip{margin-top:12px;background:#FBF9F4;border-radius:12px;padding:10px 12px;font-size:12.5px;color:#6B6557}
 .hh-names{font-size:12px;color:var(--sub);text-align:center;margin-bottom:10px}
+/* 海报 */
+.poster-mask{position:fixed;inset:0;background:rgba(40,35,25,.72);z-index:200;display:none;align-items:center;justify-content:center;padding:16px}
+.poster-mask.show{display:flex}
+.poster-pop{background:#FFF;border-radius:18px;max-width:400px;width:100%;max-height:92vh;overflow:auto;padding:14px;text-align:center}
+.poster-pop img{width:100%;border-radius:10px;box-shadow:0 4px 18px rgba(0,0,0,.18)}
+.poster-tip{font-size:12px;color:#8B8578;margin:10px 2px 2px}
+.poster-btns{display:flex;gap:8px;margin-top:10px}
+.poster-btns button{flex:1;height:42px;border-radius:11px;border:none;font-size:14px;font-family:inherit;cursor:pointer}
+.pb-main{background:linear-gradient(135deg,#D4AC6A,var(--gold-dk));color:#fff;font-weight:600}
+.pb-sub{background:#F5F1E6;color:#6B6557}
+.poster-qr{margin-top:10px}
+.poster-qr label{font-size:12px;color:#A9834A;cursor:pointer;background:#FBF4E8;border-radius:999px;padding:4px 14px;display:inline-block}
+.poster-qr input{display:none}
+.btn-poster{display:block;margin:18px auto 0;border:1.5px solid #E3C88F;background:#FDF9F0;color:#A9834A;border-radius:999px;padding:9px 30px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
 /* 免责 & 底部 */
 .disclaimer{margin-top:16px;text-align:center;font-size:11.5px;color:#B3AC9C;line-height:1.8}
 .btn-again{display:block;margin:18px auto 0;border:1.5px solid #E5DECF;background:#FFF;border-radius:999px;padding:8px 26px;font-size:13.5px;color:#8B8578;cursor:pointer;font-family:inherit}
@@ -342,11 +356,27 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:#CFC9BA}
     <div class="hh-result" id="hhResult"></div>
   </div>
 
+  <button class="btn-poster" id="posterBtn" type="button">📸 生成我的命盘海报 · 分享到小红书</button>
+
   <p class="disclaimer">以上内容为传统命理学说的算法演绎，属传统文化视角的<br>文化娱乐参考，不构成任何医疗、投资或人生决策建议。</p>
   <button class="btn-again" id="againBtn">↺ 换个人看看</button>
 </section>
 
 <footer>问运 · 纯前端本地排盘 · 数据不出浏览器</footer>
+</div>
+<div class="poster-mask" id="posterMask">
+  <div class="poster-pop">
+    <img id="posterImg" alt="命盘分享海报">
+    <div class="poster-tip">长按图片保存 → 发小红书 / 朋友圈<br>发布时带上话题：#八字 #国学 #传统文化，效果更好</div>
+    <div class="poster-btns">
+      <button class="pb-main" id="posterSave" type="button">保存图片</button>
+      <button class="pb-sub" id="posterClose" type="button">关闭</button>
+    </div>
+    <div class="poster-qr">
+      <label for="qrFile">＋ 贴上我的二维码（选填，长期保存）</label>
+      <input type="file" id="qrFile" accept="image/*">
+    </div>
+  </div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -1039,6 +1069,110 @@ window.doHehun=function(){
   $('hhResult').scrollIntoView({behavior:'smooth',block:'center'});
 };
 $('hhBtn').onclick=doHehun;
+/* 分享海报 */
+let qrImg=null;
+try{const qs=localStorage.getItem('posterQR');if(qs){qrImg=new Image();qrImg.src=qs;}}catch(e){}
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function wrapText(ctx,text,x,y,maxW,lh){
+  const chars=[...text];let line='';
+  for(const ch of chars){
+    if(ctx.measureText(line+ch).width>maxW&&line){ctx.fillText(line,x,y);y+=lh;line=ch;}
+    else line+=ch;
+  }
+  if(line){ctx.fillText(line,x,y);y+=lh;}
+  return y;
+}
+function drawPoster(p){
+  const c=document.createElement('canvas');c.width=750;c.height=1340;
+  const ctx=c.getContext('2d');
+  const FONT=(s,w)=>`${w||''} ${s}px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif`;
+  ctx.fillStyle='#F7F3EB';ctx.fillRect(0,0,750,1340);
+  ctx.fillStyle='rgba(201,160,92,.13)';ctx.beginPath();ctx.arc(750,10,190,0,7);ctx.fill();
+  ctx.beginPath();ctx.arc(20,30,120,0,7);ctx.fill();
+  ctx.textAlign='center';
+  ctx.fillStyle='#A9834A';ctx.font=FONT(26,'600');ctx.fillText('问 运 · 白 话 八 字 排 盘',375,78);
+  ctx.fillStyle='rgba(201,160,92,.5)';ctx.fillRect(295,100,160,3);
+  ctx.fillStyle='#C9A05C';ctx.fillRect(367,96,16,11);
+  /* 姓名 */
+  ctx.fillStyle='#33322E';ctx.font=FONT(54,'700');ctx.fillText(curName,375,178);
+  ctx.fillStyle='#8B8578';ctx.font=FONT(24);
+  ctx.fillText(`${p.gender} · ${p.baziYear}年 · 属${ZODIAC[p.yZhi]} · ${GAN[p.dGan]}${ZHI[p.dZhi]}日主 · ${p.sTxt}`,375,218);
+  /* 总评 */
+  const vd=verdictView(p);
+  ctx.fillStyle='#B3AC9C';ctx.font=FONT(24);ctx.fillText('—— 命 局 总 评 ——',375,296);
+  ctx.fillStyle='#A9834A';ctx.font=FONT(70,'700');ctx.fillText(vd.type,375,382);
+  ctx.fillStyle='#55503F';ctx.font=FONT(26);
+  let y=wrapText(ctx,`『${vd.quote}』`,375,454,630,40);
+  /* 性格 */
+  const pv=personaView(p);
+  y+=24;
+  ctx.fillStyle='#B3AC9C';ctx.font=FONT(24);ctx.fillText('—— 日 主 性 格 ——',375,y);y+=64;
+  ctx.save();ctx.translate(210,y-52);
+  ctx.fillStyle='#F1E2C6';ctx.beginPath();ctx.arc(0,0,58,0,7);ctx.fill();
+  ctx.fillStyle='#A9834A';ctx.font=FONT(58,'700');ctx.fillText(WX[ganWx(p.dGan)],0,20);ctx.restore();
+  ctx.textAlign='left';
+  ctx.fillStyle='#33322E';ctx.font=FONT(38,'700');ctx.fillText(pv.imgy[0],300,y-74);
+  ctx.fillStyle='#8B8578';ctx.font=FONT(23);ctx.fillText('日主'+GAN[p.dGan]+WX[ganWx(p.dGan)]+' · '+p.sTxt,300,y-30);
+  let tx=300;ctx.font=FONT(22,'600');
+  pv.tags.slice(0,2).forEach(t=>{
+    const w=ctx.measureText(t).width+36;
+    ctx.fillStyle='#F5F1E6';rr(ctx,tx,y-4,w,42,21);ctx.fill();
+    ctx.fillStyle='#8A6D3B';ctx.fillText(t,tx+18,y+24);tx+=w+12;
+  });
+  ctx.textAlign='center';
+  /* 四维指数 */
+  y+=72;
+  ctx.fillStyle='#B3AC9C';ctx.font=FONT(24);ctx.fillText('—— 人 生 四 维 指 数 ——',375,y);y+=46;
+  const iv=indexesView(p);
+  const IM=[['财富','#C9A227'],['事业','#5B8DB8'],['桃花','#C96A8A'],['健康','#5F8A5A']];
+  iv.notes.forEach((n,i)=>{
+    const yy=y+i*74;
+    ctx.textAlign='left';
+    ctx.fillStyle='#55503F';ctx.font=FONT(27,'600');ctx.fillText(IM[i][0],95,yy+9);
+    ctx.fillStyle='#EFE9DC';rr(ctx,185,yy-8,380,22,11);ctx.fill();
+    ctx.fillStyle=IM[i][1];rr(ctx,185,yy-8,Math.max(30,380*n.v/100),22,11);ctx.fill();
+    ctx.fillStyle=IM[i][1];ctx.font=FONT(32,'700');ctx.fillText(n.v,600,yy+12);
+    ctx.textAlign='center';
+  });
+  /* CTA */
+  const cy=y+4*74+26;
+  ctx.fillStyle='#FFFFFF';rr(ctx,60,cy,630,196,26);ctx.fill();
+  ctx.strokeStyle='#EDD9B0';ctx.lineWidth=2;rr(ctx,60,cy,630,196,26);ctx.stroke();
+  if(qrImg&&qrImg.complete&&qrImg.naturalWidth){
+    ctx.drawImage(qrImg,88,cy+28,140,140);
+    ctx.textAlign='left';
+    ctx.fillStyle='#33322E';ctx.font=FONT(34,'700');ctx.fillText('你的人生剧本是什么型？',262,cy+70);
+    ctx.fillStyle='#8B8578';ctx.font=FONT(24);ctx.fillText('扫码进入，输入姓名生日',262,cy+112);
+    ctx.fillText('1 秒出同款全套分析',262,cy+148);
+    ctx.textAlign='center';
+  }else{
+    ctx.fillStyle='#33322E';ctx.font=FONT(36,'700');ctx.fillText('你的人生剧本是什么型？',375,cy+72);
+    ctx.fillStyle='#8B8578';ctx.font=FONT(24);ctx.fillText('输入姓名和生日 · 1 秒出同款全套分析',375,cy+116);
+    ctx.fillStyle='#A9834A';ctx.font=FONT(26,'600');ctx.fillText('pangdt790805321.github.io/wenyun-bazi',375,cy+158);
+  }
+  ctx.fillStyle='#C0B8A6';ctx.font=FONT(19);ctx.fillText('内容为传统命理文化娱乐演绎 · 仅供参考',375,1306);
+  return c.toDataURL('image/png');
+}
+window.makePoster=function(){
+  if(!curP){toast('请先完成排盘');return}
+  $('posterImg').src=drawPoster(curP);
+  $('posterMask').classList.add('show');
+};
+$('posterBtn').onclick=makePoster;
+$('posterClose').onclick=()=>$('posterMask').classList.remove('show');
+$('posterSave').onclick=function(){
+  const a=document.createElement('a');
+  a.href=$('posterImg').src;a.download=`${curName}-问运八字海报.png`;
+  document.body.appendChild(a);a.click();a.remove();
+  toast('已开始下载；手机端可长按图片保存');
+};
+$('qrFile').onchange=function(){
+  const f=this.files[0];if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{try{localStorage.setItem('posterQR',rd.result);}catch(e){}
+    qrImg=new Image();qrImg.onload=()=>{makePoster();toast('二维码已贴上海报');};qrImg.src=rd.result;};
+  rd.readAsDataURL(f);
+};
 /* URL 参数直达 */
 (function(){
   const q=new URLSearchParams(location.search);
