@@ -168,6 +168,43 @@ table.pz{width:100%;border-collapse:collapse;table-layout:fixed}
 .verdict .quote{font-size:16px;font-weight:700;margin-top:6px;line-height:1.7;color:#4A4232}
 .verdict .kw{display:flex;gap:7px;justify-content:center;margin-top:10px;flex-wrap:wrap}
 .verdict .kw span{font-size:12px;background:#fff;border:1px solid #EDD9B0;color:#8A6D3B;border-radius:999px;padding:2px 12px}
+/* 人生曲线 */
+.curve-wrap{margin:2px 2px 14px}
+.curve-wrap svg{width:100%;height:auto;display:block}
+.curve-note{font-size:11px;color:#A89F8B;text-align:center;margin-top:2px}
+/* 流月日历 */
+.cal-head{display:flex;font-size:11px;color:#A89F8B;margin-bottom:4px}
+.cal-head span{flex:1;text-align:center}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-cell{aspect-ratio:1;border-radius:10px;background:#F7F4EC;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;color:#6B6557}
+.cal-cell.empty{background:transparent}
+.cal-cell .d{font-weight:600}
+.cal-cell.good{background:#EDF3E8}.cal-cell.good .d{color:#4E7B3F}
+.cal-cell.bad{background:#F7E9E4}.cal-cell.bad .d{color:#B0573F}
+.cal-cell.today{outline:2px solid #D4AC6A;outline-offset:-2px}
+.cal-best{margin-top:10px;font-size:12px;color:#8A6D3B;background:#FBF4E8;border-radius:10px;padding:7px 11px}
+/* 合婚 */
+.hh-form{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.hh-form input,.hh-form select{flex:1;min-width:110px;height:42px;border:1.5px solid #E5DECF;border-radius:11px;background:#FCFBF7;padding:0 10px;font-size:14px;font-family:inherit;color:var(--ink);outline:none}
+.hh-form input:focus,.hh-form select:focus{border-color:#D98A9C}
+.hh-btn{width:100%;height:44px;margin-top:12px;border:none;border-radius:12px;background:linear-gradient(135deg,#D98A9C,#C05A78);color:#fff;font-size:15px;font-weight:600;letter-spacing:3px;cursor:pointer;font-family:inherit;box-shadow:0 3px 10px rgba(192,90,120,.28)}
+.hh-btn:active{transform:scale(.985)}
+.hh-result{margin-top:14px;display:none}
+.hh-score-wrap{display:flex;align-items:center;gap:16px}
+.hh-ring{position:relative;width:104px;height:104px;flex:none}
+.hh-ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.hh-ring .num b{font-size:29px;color:#C05A78}
+.hh-ring .num i{font-style:normal;font-size:10px;color:var(--sub)}
+.hh-grade{font-size:17px;font-weight:700;color:#C05A78}
+.hh-quote{font-size:12.5px;color:#6B6557;margin-top:4px;text-align:justify}
+.hh-items{margin-top:12px}
+.hh-item{display:flex;align-items:center;gap:8px;margin-top:7px;font-size:12.5px}
+.hh-item .nm{width:76px;color:#6B6557;flex:none}
+.hh-item .trk{flex:1;height:8px;background:#F1EDE2;border-radius:4px;overflow:hidden}
+.hh-item .fil{height:100%;border-radius:4px;background:linear-gradient(90deg,#D98A9C,#C05A78);width:0;transition:width .9s}
+.hh-item .v{flex:none;max-width:150px;font-size:11px;color:#8B8578;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hh-tip{margin-top:12px;background:#FBF9F4;border-radius:12px;padding:10px 12px;font-size:12.5px;color:#6B6557}
+.hh-names{font-size:12px;color:var(--sub);text-align:center;margin-bottom:10px}
 /* 免责 & 底部 */
 .disclaimer{margin-top:16px;text-align:center;font-size:11.5px;color:#B3AC9C;line-height:1.8}
 .btn-again{display:block;margin:18px auto 0;border:1.5px solid #E5DECF;background:#FFF;border-radius:999px;padding:8px 26px;font-size:13.5px;color:#8B8578;cursor:pointer;font-family:inherit}
@@ -259,12 +296,18 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:#CFC9BA}
   </div>
 
   <div class="card">
+    <h2 class="sec">流月运势<span class="tag" id="calTag"></span></h2>
+    <div id="calBody"></div>
+  </div>
+
+  <div class="card">
     <h2 class="sec">流年速览<span class="tag">近五年</span></h2>
     <div id="lnBody"></div>
   </div>
 
   <div class="card">
     <h2 class="sec">一生大运情况<span class="tag" id="curTag"></span></h2>
+    <div class="curve-wrap" id="curveBox"></div>
     <div class="dy-legend">
       <span><span class="bar" style="background:var(--shun)"></span>顺遂亨通</span>
       <span><span class="bar" style="background:var(--zhi)"></span>滞 · 阻滞承压</span>
@@ -278,6 +321,26 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:#CFC9BA}
   </div>
 
   <div class="verdict" id="verdictBox"></div>
+
+  <div class="card">
+    <h2 class="sec">测测合婚<span class="tag">输入 TA 的生日</span></h2>
+    <div class="hh-form">
+      <input type="text" id="hhName" maxlength="12" placeholder="TA 的昵称">
+      <select id="hhGender"><option value="女">女</option><option value="男">男</option></select>
+    </div>
+    <div class="hh-form">
+      <input type="date" id="hhDate" min="1930-01-01" max="2026-12-31">
+      <select id="hhHour">
+        <option value="-1">时辰未知</option>
+        <option value="0">子时</option><option value="1">丑时</option><option value="2">寅时</option>
+        <option value="3">卯时</option><option value="4">辰时</option><option value="5">巳时</option>
+        <option value="6">午时</option><option value="7">未时</option><option value="8">申时</option>
+        <option value="9">酉时</option><option value="10">戌时</option><option value="11">亥时</option>
+      </select>
+    </div>
+    <button class="hh-btn" id="hhBtn" type="button">❤ 开始合婚</button>
+    <div class="hh-result" id="hhResult"></div>
+  </div>
 
   <p class="disclaimer">以上内容为传统命理学说的算法演绎，属传统文化视角的<br>文化娱乐参考，不构成任何医疗、投资或人生决策建议。</p>
   <button class="btn-again" id="againBtn">↺ 换个人看看</button>
@@ -685,6 +748,95 @@ function verdictView(p){
   return {type,quote,kw};
 }
 
+/* ================= 进阶模块：人生曲线 / 流月日历 / 合婚 ================= */
+function curveView(p){
+  const pts=[];
+  p.dayuns.forEach(dy=>{
+    const a=analyzeDayun(p,dy);
+    pts.push({age:dy.age1+2.5,v:a.qianShun?78:44});
+    pts.push({age:dy.age1+7.5,v:a.houShun?78:44});
+  });
+  const ageNow=new Date().getFullYear()-p.baziYear;
+  const W=380,H=158,L=10,R=12,T=14,B=24;
+  const x=a=>L+(a-4)/(84-4)*(W-L-R);
+  const y=v=>T+(100-v)/(100-28)*(H-T-B);
+  let d=`M${x(pts[0].age).toFixed(1)},${y(pts[0].v).toFixed(1)}`;
+  for(let i=1;i<pts.length;i++){
+    const p0=pts[i-1],p1=pts[i],mx=((x(p0.age)+x(p1.age))/2).toFixed(1);
+    d+=` C${mx},${y(p0.v).toFixed(1)} ${mx},${y(p1.v).toFixed(1)} ${x(p1.age).toFixed(1)},${y(p1.v).toFixed(1)}`;
+  }
+  const area=d+` L${x(pts[pts.length-1].age).toFixed(1)},${H-B} L${x(pts[0].age).toFixed(1)},${H-B} Z`;
+  let ticks='';
+  for(let a=4;a<=84;a+=10)ticks+=`<text x="${x(a)}" y="${H-8}" font-size="9" fill="#B3AC9C" text-anchor="middle">${a}</text>`;
+  const cx=ageNow>=4&&ageNow<=84?x(ageNow):null;
+  const nowLine=cx!==null?`<line x1="${cx}" y1="${T-4}" x2="${cx}" y2="${H-B}" stroke="#D4AC6A" stroke-width="1.2" stroke-dasharray="3 3"/><circle cx="${cx}" cy="${T-7}" r="3" fill="#D4AC6A"/><text x="${cx}" y="${T-11}" font-size="9" fill="#A9834A" text-anchor="middle">现在</text>`:'';
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="cvg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8CB86B" stop-opacity=".35"/><stop offset="1" stop-color="#8CB86B" stop-opacity=".02"/>
+    </linearGradient></defs>
+    <line x1="${L}" y1="${y(78)}" x2="${W-R}" y2="${y(78)}" stroke="#EDF3E8" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="${L}" y1="${y(44)}" x2="${W-R}" y2="${y(44)}" stroke="#F5EDE8" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="${W-R}" y="${y(78)-3}" font-size="9" fill="#7FA05F" text-anchor="end">顺遂线</text>
+    <text x="${W-R}" y="${y(44)+10}" font-size="9" fill="#BBA89E" text-anchor="end">承压线</text>
+    <path d="${area}" fill="url(#cvg)"/>
+    <path d="${d}" fill="none" stroke="#8CB86B" stroke-width="2.2" stroke-linecap="round"/>
+    ${pts.map(pt=>`<circle cx="${x(pt.age).toFixed(1)}" cy="${y(pt.v).toFixed(1)}" r="2.6" fill="#fff" stroke="#7FA05F" stroke-width="1.6"/>`).join('')}
+    ${nowLine}${ticks}
+  </svg><div class="curve-note">运势曲线按八步大运前后五年顺滞绘制 · 虚线为你当前所处位置</div>`;
+}
+function monthView(p){
+  const now=new Date(),y=now.getFullYear(),m=now.getMonth();
+  const days=new Date(y,m+1,0).getDate();
+  const firstDow=(new Date(y,m,1).getDay()+6)%7;
+  const cells=[];
+  for(let i=0;i<firstDow;i++)cells.push(null);
+  for(let dd=1;dd<=days;dd++){
+    const t=dayGZidx(y,m+1,dd),w=ganWx(t%10);
+    cells.push({d:dd,lv:p.fav.includes(w)?'good':p.avoid.includes(w)?'bad':'flat'});
+  }
+  const best=cells.filter(c=>c&&c.lv==='good').map(c=>c.d);
+  const bad=cells.filter(c=>c&&c.lv==='bad').map(c=>c.d);
+  return {cells,today:now.getDate(),best,bad,ym:`${y}年${m+1}月`};
+}
+function hehunView(p,q,n2){
+  const items=[];let score=0;
+  const aw=ganWx(p.dGan),bw=ganWx(q.dGan);
+  let rel,pts;
+  if(aw===bw){rel='日主同行·同频共振';pts=22;}
+  else if((aw+1)%5===bw||(bw+1)%5===aw){rel='日主相生·天然互补';pts=25;}
+  else{rel='日主相克·互怼又互撩';pts=12;}
+  items.push({nm:'日主关系',txt:rel,v:pts,max:25});score+=pts;
+  const z1=p.dZhi,z2=q.dZhi;let zrel,zpts;
+  if(LIUHE[z1]===z2){zrel='夫妻宫六合·天作之合';zpts=25;}
+  else if(SANHE.some(g=>g.includes(z1)&&g.includes(z2))&&z1!==z2){zrel='夫妻宫三合·气场合拍';zpts=21;}
+  else if(LIUCHONG[z1]===z2){zrel='夫妻宫六冲·相爱相杀';zpts=-8;}
+  else if(XINGHAI[z1]===z2){zrel='夫妻宫相害·容易内耗';zpts=-6;}
+  else{zrel='夫妻宫无刑冲·平稳相处';zpts=13;}
+  items.push({nm:'夫妻宫合冲',txt:zrel,v:zpts,max:25});score+=zpts;
+  let ftxt,fpts;
+  if(q.fav.includes(aw)&&p.fav.includes(bw)){ftxt='互为对方喜用·越处越旺';fpts=20;}
+  else if(q.fav.includes(aw)||p.fav.includes(bw)){ftxt='一方旺另一方·贵人体质';fpts=15;}
+  else if(p.fav.some(w=>q.fav.includes(w))){ftxt='喜用相近·节奏一致';fpts=12;}
+  else{ftxt='喜用不同·各玩各的';fpts=7;}
+  items.push({nm:'五行互补',txt:ftxt,v:fpts,max:20});score+=fpts;
+  let arel='属相平和·不冲不害',apts=7;
+  if(LIUHE[p.yZhi]===q.yZhi){arel='属相六合·上等婚配';apts=12;}
+  else if(SANHE.some(g=>g.includes(p.yZhi)&&g.includes(q.yZhi))&&p.yZhi!==q.yZhi){arel='属相三合·相处顺滑';apts=10;}
+  else if(LIUCHONG[p.yZhi]===q.yZhi){arel='属相六冲·老话说的犯冲';apts=-5;}
+  else if(XINGHAI[p.yZhi]===q.yZhi){arel='属相相害·小事易积怨';apts=-4;}
+  items.push({nm:'属相关系',txt:arel,v:apts,max:12});score+=apts;
+  const total=Math.max(30,Math.min(96,Math.round(score/82*100)));
+  let grade,quote;
+  if(total>=80){grade='天作之合';quote='两人八字合点多、冲点少：不是没摩擦，而是摩擦都有解。这缘分值得认真经营——处好了，是互相的长期饭票。';}
+  else if(total>=65){grade='情投意合';quote='整体合大于冲，底子是好的。把"互补"当亮点用、把"相克"当提醒看，日子会越处越顺。';}
+  else if(total>=50){grade='细水长流';quote='不是一见钟情的炸裂剧本，是越处越有味的类型。少争对错、多一起吃饭，感情靠攒不靠吵。';}
+  else{grade='需要磨合';quote='冲克点偏多：不是不合适，是"磨合版"关系。提前说清底线、给彼此留空间，反而处得久。';}
+  const weak=[...items].sort((a,b)=>a.v-b.v)[0];
+  const TIP={'日主相克·互怼又互撩':'吵架先分开十分钟再谈，火对火只会升级','夫妻宫六冲·相爱相杀':'重大决定避开情绪上头时做，偶尔小别胜新婚','夫妻宫相害·容易内耗':'账目与家务提前分工，最容易积怨的就是这两样','喜用不同·各玩各的':'保留各自的爱好与朋友圈，不必事事同步','属相六冲·老话说的犯冲':'别在亲友面前互怼，关起门怎么闹都行','属相相害·小事易积怨':'小事当场说开，攒着不说才是雷'};
+  const tip=TIP[weak.txt]||'多夸少怼、仪式感比道理管用';
+  return {total,grade,quote,items,tip,min:Math.min(...items.map(i=>i.v))};
+}
+
 /* ================= 名人档案 ================= */
 const CELEBS=[
   {n:'黄仁勋',d:'1963-02-17',g:'男',t:'黄仁勋（Jensen Huang）为 NVIDIA 联合创始人兼首席执行官，主导公司从图形处理器向人工智能计算平台转型，被视为全球 AI 浪潮的核心推手之一。'},
@@ -703,7 +855,7 @@ const CELEBS=[
 
 /* ================= 渲染 ================= */
 const $=id=>document.getElementById(id);
-let gender='男';
+let gender='男',curP=null,curName='';
 $('gM').onclick=()=>{gender='男';$('gM').classList.add('on');$('gF').classList.remove('on')};
 $('gF').onclick=()=>{gender='女';$('gF').classList.add('on');$('gM').classList.remove('on')};
 function toast(s){const t=$('toast');t.textContent=s;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
@@ -711,6 +863,7 @@ function toast(s){const t=$('toast');t.textContent=s;t.classList.add('show');set
 function render(name,dateStr,hourIdx){
   const [y,m,d]=dateStr.split('-').map(Number);
   const p=paiPan(y,m,d,hourIdx,gender);
+  curP=p;curName=name;
   /* 问候 */
   $('result').style.display='block';
   $('greeting').style.display='block';
@@ -753,6 +906,7 @@ function render(name,dateStr,hourIdx){
   /* 大运 */
   const cur=p.dayuns.find(dd=>dd.isCur);
   $('curTag').textContent=cur?`当前：${cur.gz}运`:'';
+  $('curveBox').innerHTML=curveView(p);
   const list=$('dayunList');list.innerHTML='';
   p.dayuns.forEach(dy=>{
     const a=analyzeDayun(p,dy);
@@ -816,6 +970,13 @@ function render(name,dateStr,hourIdx){
     <div style="text-align:center;font-size:12.5px;color:#6B6557">${tv.moodTxt}</div>
     <div class="yiji"><div class="box yi"><b>宜</b>${tv.yi}</div><div class="box ji"><b>忌</b>${tv.ji}</div></div>
     <div class="luck-line"><span>幸运色 · ${tv.color}</span><span>幸运数字 · ${tv.nums.join('、')}</span></div>`;
+  /* 流月日历 */
+  const mv=monthView(p);
+  $('calTag').textContent=mv.ym;
+  $('calBody').innerHTML=`
+    <div class="cal-head"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+    <div class="cal-grid">${mv.cells.map(c=>c?`<div class="cal-cell ${c.lv}${c.d===mv.today?' today':''}"><span class="d">${c.d}</span><span class="pt" style="background:${c.lv==='good'?'#7FA05F':c.lv==='bad'?'#C4745A':'#CFC9BA'}"></span></div>`:'<div class="cal-cell empty"></div>').join('')}</div>
+    <div class="cal-best">${mv.best.length?`本月吉日：${mv.best.slice(0,6).map(dd=>dd+'日').join('、')}${mv.best.length>6?' 等':''}——表白、签约、开张可往前排；红格日宜守不宜攻。`:'本月五行助力平均，无突出吉日，按部就班即可。'}</div>`;
   /* 流年速览 */
   const lns=liunianView(p);
   $('lnBody').innerHTML=`<div class="ln-grid">${lns.map(l=>`
@@ -852,6 +1013,32 @@ $('goBtn').onclick=()=>{
   render(v.name,v.date,v.hour);
 };
 $('againBtn').onclick=()=>{$('formCard').scrollIntoView({behavior:'smooth'});$('fName').focus()};
+/* 合婚 */
+window.doHehun=function(){
+  if(!curP){toast('请先完成自己的排盘');return}
+  const n2=$('hhName').value.trim()||'TA';
+  const d2=$('hhDate').value;
+  if(!d2){toast('请选择 TA 的出生日期');$('hhDate').focus();return}
+  const [y2,m2,d22]=d2.split('-').map(Number);
+  const q=paiPan(y2,m2,d22,parseInt($('hhHour').value),$('hhGender').value);
+  const r=hehunView(curP,q,n2);
+  const c=2*Math.PI*45;
+  $('hhResult').style.display='block';
+  $('hhResult').innerHTML=`
+    <div class="hh-names">${curName} ❤ ${n2} 的合盘</div>
+    <div class="hh-score-wrap">
+      <div class="hh-ring"><svg width="104" height="104" viewBox="0 0 104 104" style="transform:rotate(-90deg)">
+        <circle cx="52" cy="52" r="45" fill="none" stroke="#F1EDE2" stroke-width="9"/>
+        <circle cx="52" cy="52" r="45" fill="none" stroke="#C05A78" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(c*r.total/100).toFixed(1)} ${c.toFixed(1)}"/>
+      </svg><div class="num"><b>${r.total}</b><i>契合指数</i></div></div>
+      <div><div class="hh-grade">${r.grade}</div><div class="hh-quote">${r.quote}</div></div>
+    </div>
+    <div class="hh-items">${r.items.map(it=>`<div class="hh-item"><span class="nm">${it.nm}</span><div class="trk"><div class="fil" data-w="${Math.max(5,Math.round(it.v/it.max*100))}"></div></div><span class="v" title="${it.txt}">${it.txt}</span></div>`).join('')}</div>
+    <div class="hh-tip">相处提示：${r.tip}</div>`;
+  setTimeout(()=>document.querySelectorAll('.hh-item .fil').forEach(el=>el.style.width=el.dataset.w+'%'),60);
+  $('hhResult').scrollIntoView({behavior:'smooth',block:'center'});
+};
+$('hhBtn').onclick=doHehun;
 /* URL 参数直达 */
 (function(){
   const q=new URLSearchParams(location.search);
