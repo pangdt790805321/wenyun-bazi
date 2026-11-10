@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>问运 · 白话八字排盘</title>
+<meta name="description" content="输入姓名与生日，即刻获得四柱排盘、一生大运与白话解读。纯浏览器本地计算，数据不上传。">
+<style>
+:root{
+  --bg:#F7F3EB; --card:#FFFFFF; --ink:#33322E; --sub:#8B8578; --gold:#C9A05C;
+  --gold-dk:#A9834A; --line:#EFE9DC;
+  --wx-mu:#4E9F3D; --wx-huo:#D94838; --wx-tu:#A67C52; --wx-jin:#C9A227; --wx-shui:#3B82C4;
+  --shun:#8CB86B; --zhi:#C2BBAD; --ok:#4E9B4E; --warn:#C96A2B; --bad:#C4432B;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;line-height:1.7;font-size:15px}
+.wrap{max-width:660px;margin:0 auto;padding:18px 14px 60px}
+header.hero{text-align:center;padding:26px 0 10px}
+.hero h1{font-size:26px;letter-spacing:2px;font-weight:700}
+.hero h1 .gold{color:var(--gold-dk)}
+.hero p{color:var(--sub);font-size:13px;margin-top:6px}
+.card{background:var(--card);border-radius:18px;box-shadow:0 2px 14px rgba(80,66,30,.07);padding:18px 16px;margin-top:14px}
+h2.sec{font-size:17px;font-weight:700;display:flex;align-items:center;gap:9px;margin-bottom:12px}
+h2.sec::before{content:"";width:4px;height:17px;border-radius:2px;background:linear-gradient(180deg,var(--gold),#E3C88F)}
+h2.sec .tag{margin-left:auto;font-size:11px;font-weight:400;color:var(--gold-dk);background:#FAF3E4;border:1px solid #EDD9B0;border-radius:999px;padding:1px 8px}
+/* 表单 */
+form label{display:block;font-size:13px;color:var(--sub);margin:12px 0 5px}
+form label b{color:var(--ink);font-weight:600;font-size:14px}
+input[type=text],select{width:100%;height:46px;border:1.5px solid #E5DECF;border-radius:12px;background:#FCFBF7;padding:0 13px;font-size:16px;color:var(--ink);font-family:inherit;outline:none;transition:.2s}
+input[type=text]:focus,select:focus{border-color:var(--gold)}
+input[type=date]{width:100%;height:46px;border:1.5px solid #E5DECF;border-radius:12px;background:#FCFBF7;padding:0 13px;font-size:16px;color:var(--ink);font-family:inherit;outline:none}
+input[type=date]:focus{border-color:var(--gold)}
+.gender-seg{display:flex;gap:10px}
+.gender-seg button{flex:1;height:46px;border-radius:12px;border:1.5px solid #E5DECF;background:#FCFBF7;font-size:16px;color:var(--ink);font-family:inherit;cursor:pointer;transition:.15s}
+.gender-seg button.on{border-color:var(--gold);background:#FAF3E4;color:var(--gold-dk);font-weight:600}
+.btn-main{width:100%;height:50px;margin-top:20px;border:none;border-radius:14px;background:linear-gradient(135deg,#D4AC6A,var(--gold-dk));color:#fff;font-size:17px;font-weight:600;letter-spacing:6px;cursor:pointer;box-shadow:0 4px 14px rgba(169,131,74,.35);font-family:inherit}
+.btn-main:active{transform:scale(.985)}
+.form-note{font-size:11.5px;color:#B3AC9C;margin-top:10px;text-align:center}
+/* 问候 */
+#greeting{display:none;text-align:center;margin-top:16px}
+#greeting .hi{font-size:20px;font-weight:700}
+#greeting .sub{font-size:12.5px;color:var(--sub);margin-top:2px}
+/* 名人卡 */
+#celebCard{display:none}
+.celeb-text{font-size:14px;color:#55503F;text-align:justify}
+.celeb-bday{margin-top:8px;font-size:12px;color:var(--sub)}
+/* 三栏统计 */
+.stats3{display:flex;gap:8px;margin-bottom:14px}
+.stats3 .st{flex:1;background:#FBF8F1;border-radius:12px;padding:10px 6px;text-align:center}
+.st .k{font-size:11.5px;color:var(--sub)}
+.st .v{font-size:16px;font-weight:700;margin-top:2px}
+.v.weak{color:var(--ok)} .v.strong{color:var(--warn)} .v.mid{color:#7A8B5A}
+/* 四柱表 */
+table.pz{width:100%;border-collapse:collapse;table-layout:fixed}
+.pz th{font-size:12px;color:var(--sub);font-weight:500;padding:4px 0}
+.pz td{text-align:center;padding:7px 2px;border-top:1px solid var(--line);vertical-align:middle}
+.pz .lbl{font-size:11.5px;color:#B3AC9C;width:52px}
+.pz .gan,.pz .zhi{font-size:23px;font-weight:700;line-height:1.3}
+.pz .cg{font-size:12.5px;color:#8B8578;letter-spacing:1px}
+.pz .ny{font-size:12px;color:#A89F8B}
+.pz .rss{font-size:12px;color:#8B8578}
+.daymark{display:inline-block;font-size:10px;color:#fff;border-radius:6px;padding:0 5px;margin-left:3px;vertical-align:middle;background:var(--gold)}
+.wx-mu{color:var(--wx-mu)} .wx-huo{color:var(--wx-huo)} .wx-tu{color:var(--wx-tu)} .wx-jin{color:var(--wx-jin)} .wx-shui{color:var(--wx-shui)}
+.legend{display:flex;flex-wrap:wrap;gap:5px 14px;margin-top:12px;font-size:11.5px;color:var(--sub)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+.pz-note{margin-top:10px;font-size:11.5px;color:#B3AC9C;text-align:center}
+.qiyun{margin-top:12px;text-align:center;font-size:13px;color:#8B8578;background:#FBF8F1;border-radius:10px;padding:8px}
+.qiyun b{color:var(--gold-dk)}
+/* 大运 */
+.dy-legend{display:flex;gap:16px;font-size:12px;color:var(--sub);margin-bottom:12px;flex-wrap:wrap}
+.dy-legend .bar{display:inline-block;width:26px;height:10px;border-radius:5px;margin-right:5px;vertical-align:-1px}
+.dy-item{border:1.5px solid var(--line);border-radius:14px;padding:13px 14px;margin-top:11px;cursor:pointer;background:#FFFDF9;transition:.15s}
+.dy-item:active{transform:scale(.995)}
+.dy-item.cur{border-color:var(--gold);background:#FDF9F0;box-shadow:0 2px 12px rgba(169,131,74,.13)}
+.dy-top{display:flex;align-items:baseline;gap:10px}
+.dy-age{font-size:15px;font-weight:700;white-space:nowrap}
+.dy-years{font-size:12px;color:var(--sub)}
+.dy-cur-badge{margin-left:auto;font-size:10.5px;color:#fff;background:linear-gradient(135deg,#D4AC6A,var(--gold-dk));border-radius:999px;padding:1px 9px;white-space:nowrap}
+.dy-mid{display:flex;align-items:center;gap:12px;margin-top:7px}
+.dy-gz{font-size:26px;font-weight:700;letter-spacing:2px}
+.dy-ss{display:flex;gap:5px;flex-wrap:wrap}
+.dy-ss span{font-size:11px;color:#8B8578;background:#F5F1E6;border-radius:6px;padding:1px 7px}
+.dy-bars{margin-left:auto;display:flex;gap:7px;min-width:150px}
+.dy-bar{flex:1;text-align:center}
+.dy-bar .b{height:8px;border-radius:4px}
+.dy-bar .b.s{background:var(--shun)} .dy-bar .b.z{background:var(--zhi)}
+.dy-bar .t{font-size:9.5px;color:var(--sub);margin-top:3px;white-space:nowrap}
+.dy-tags{margin-top:9px;display:flex;gap:6px;flex-wrap:wrap}
+.dy-tags span{font-size:11.5px;border-radius:999px;padding:2px 10px;background:#F1EFE8;color:#6B6557}
+.dy-tags span.hot{background:#FBEFEA;color:#B45E3C}
+.dy-tags span.love{background:#F7EDF2;color:#B05A80}
+.dy-tags span.calm{background:#EEF2EA;color:#5F7A57}
+.dy-shensha{margin-top:8px;font-size:11.5px;color:#A9834A}
+.dy-shensha::before{content:"✦ ";color:#D8BC85}
+.dy-arrow{float:right;color:#C2BBAD;font-size:13px;transition:.2s}
+.dy-item.open .dy-arrow{transform:rotate(90deg)}
+/* 白话解读 */
+.dy-detail{display:none;margin-top:12px;border-top:1px dashed #E5DECF;padding-top:12px}
+.dy-item.open .dy-detail{display:block}
+.dt-head{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.dt-badge{font-size:11px;border-radius:999px;padding:1px 9px;font-weight:500}
+.dt-badge.up{background:#EDF5EA;color:#4E9B4E}
+.dt-badge.flat{background:#FAF3E4;color:#A9834A}
+.dt-badge.down{background:#FBEDE9;color:#C4432B}
+.dt-block{background:#FBF9F4;border-radius:12px;padding:11px 13px;margin-top:9px;position:relative;overflow:hidden}
+.dt-block::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3.5px}
+.dt-block.up::before{background:#8CB86B} .dt-block.down::before{background:#D89A8A} .dt-block.flat::before{background:#D8BC85}
+.dt-block h4{font-size:13.5px;color:#55503F;margin-bottom:4px}
+.dt-block p{font-size:13.5px;color:#6B6557;text-align:justify}
+/* 免责 & 底部 */
+.disclaimer{margin-top:16px;text-align:center;font-size:11.5px;color:#B3AC9C;line-height:1.8}
+.btn-again{display:block;margin:18px auto 0;border:1.5px solid #E5DECF;background:#FFF;border-radius:999px;padding:8px 26px;font-size:13.5px;color:#8B8578;cursor:pointer;font-family:inherit}
+footer{margin-top:26px;text-align:center;font-size:11px;color:#CFC9BA}
+.toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%);background:rgba(60,55,40,.92);color:#fff;font-size:13px;border-radius:999px;padding:8px 20px;opacity:0;pointer-events:none;transition:.25s;z-index:99}
+.toast.show{opacity:1}
+@media (max-width:420px){ .dy-bars{min-width:128px} .dy-gz{font-size:23px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>问运 <span class="gold">·</span> 白话八字排盘</h1>
+  <p>姓名 + 生日，四柱 · 一生大运 · 白话解读</p>
+</header>
+
+<section class="card" id="formCard">
+  <h2 class="sec">基本信息</h2>
+  <form id="theForm" onsubmit="return false">
+    <label><b>姓名</b>（只用于结果称呼）</label>
+    <input type="text" id="fName" maxlength="12" placeholder="请输入姓名">
+    <label><b>性别</b>（决定大运顺逆）</label>
+    <div class="gender-seg">
+      <button type="button" id="gM" class="on">男</button>
+      <button type="button" id="gF">女</button>
+    </div>
+    <label><b>出生日期</b>（公历）</label>
+    <input type="date" id="fDate" min="1930-01-01" max="2026-12-31">
+    <label><b>出生时辰</b>（可选，不填按三柱推）</label>
+    <select id="fHour">
+      <option value="-1">时辰未知（按三柱推）</option>
+      <option value="0">子时 23:00-00:59</option>
+      <option value="1">丑时 01:00-02:59</option>
+      <option value="2">寅时 03:00-04:59</option>
+      <option value="3">卯时 05:00-06:59</option>
+      <option value="4">辰时 07:00-08:59</option>
+      <option value="5">巳时 09:00-10:59</option>
+      <option value="6">午时 11:00-12:59</option>
+      <option value="7">未时 13:00-14:59</option>
+      <option value="8">申时 15:00-16:59</option>
+      <option value="9">酉时 17:00-18:59</option>
+      <option value="10">戌时 19:00-20:59</option>
+      <option value="11">亥时 21:00-22:59</option>
+    </select>
+    <button class="btn-main" id="goBtn" type="button">开始排盘</button>
+    <div class="form-note">所有计算均在本页面完成，不上传任何数据 · 传统文化视角，仅供参考娱乐</div>
+  </form>
+</section>
+
+<section id="result" style="display:none">
+  <div id="greeting">
+    <div class="hi" id="hiText"></div>
+    <div class="sub" id="hiSub"></div>
+  </div>
+
+  <div class="card" id="celebCard">
+    <h2 class="sec">人物简介<span class="tag">权威公开档案</span></h2>
+    <div class="celeb-text" id="celebText"></div>
+    <div class="celeb-bday" id="celebBday"></div>
+  </div>
+
+  <div class="card">
+    <h2 class="sec">四柱排盘</h2>
+    <div class="stats3">
+      <div class="st"><div class="k">日主旺衰</div><div class="v" id="stStrength">—</div></div>
+      <div class="st"><div class="k">喜用五行</div><div class="v" id="stFav" style="font-size:15px;letter-spacing:2px">—</div></div>
+      <div class="st"><div class="k">忌神五行</div><div class="v" id="stAvoid" style="font-size:15px;letter-spacing:2px">—</div></div>
+    </div>
+    <div id="pzTable"></div>
+    <div class="legend" id="wxLegend"></div>
+    <div class="qiyun" id="qiYun"></div>
+    <div class="pz-note" id="pzNote"></div>
+  </div>
+
+  <div class="card">
+    <h2 class="sec">一生大运情况<span class="tag" id="curTag"></span></h2>
+    <div class="dy-legend">
+      <span><span class="bar" style="background:var(--shun)"></span>顺遂亨通</span>
+      <span><span class="bar" style="background:var(--zhi)"></span>滞 · 阻滞承压</span>
+    </div>
+    <div id="dayunList"></div>
+  </div>
+
+  <p class="disclaimer">以上内容为传统命理学说的算法演绎，属传统文化视角的<br>文化娱乐参考，不构成任何医疗、投资或人生决策建议。</p>
+  <button class="btn-again" id="againBtn">↺ 换个人看看</button>
+</section>
+
+<footer>问运 · 纯前端本地排盘 · 数据不出浏览器</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= 基础表 ================= */
+const GAN=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const ZHI=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const WX=['木','火','土','金','水'];
+const WXCLS=['wx-mu','wx-huo','wx-tu','wx-jin','wx-shui'];
+const WXHEX=['#4E9F3D','#D94838','#A67C52','#C9A227','#3B82C4'];
+const ganWx=i=>Math.floor(i/2);                      // 天干五行索引
+const zhiWx=[4,2,0,0,2,1,1,2,3,3,2,4];               // 地支五行索引
+const CANG=[[9],[5,9,7],[0,2,4],[1],[4,1,9],[2,6,4],[3,5],[5,3,1],[6,8,4],[7],[4,7,3],[8,0]]; // 藏干(干索引)，主气在前
+const NAYIN=['海中金','炉中火','大林木','路旁土','剑锋金','山头火','涧下水','城头土','白蜡金','杨柳木','泉中水','屋上土','霹雳火','松柏木','长流水','砂中金','山下火','平地木','壁上土','金箔金','覆灯火','天河水','大驿土','钗钏金','大海水','大溪水','沙中土','天上火','石榴木','桑柘木'];
+const nayin=(g,z)=>{for(let i=0;i<60;i++)if(i%10===g&&i%12===z)return NAYIN[Math.floor(i/2)];}
+
+/* 十神：以日干为我 */
+function shiShen(dg,og){
+  const dw=ganWx(dg),ow=ganWx(og),same=(dg%2)===(og%2);
+  if(dw===ow)return same?'比肩':'劫财';
+  if((dw+1)%5===ow)return same?'食神':'伤官';
+  if((dw+2)%5===ow)return same?'偏财':'正财';
+  if((dw+3)%5===ow)return same?'七杀':'正官';
+  return same?'偏印':'正印';
+}
+/* ================= 历法 ================= */
+function toJD(y,m,d,hUTC=0){if(m<=2){y--;m+=12}const A=Math.floor(y/100),B=2-A+Math.floor(A/4);
+  return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+B-1524.5+hUTC/24;}
+function sunLong(jd){const T=(jd-2451545)/36525;
+  const L0=280.46646+36000.76983*T+0.0003032*T*T, M=(357.52911+35999.05029*T-0.0001537*T*T)*Math.PI/180;
+  const C=(1.914602-0.004817*T-0.000014*T*T)*Math.sin(M)+(0.019993-0.000101*T)*Math.sin(2*M)+0.000289*Math.sin(3*M);
+  const om=(125.04-1934.136*T)*Math.PI/180;
+  return (((L0+C-0.00569-0.00478*Math.sin(om))%360)+360)%360;}
+const JIEQI=['立春','惊蛰','清明','立夏','芒种','小暑','立秋','白露','寒露','立冬','大雪','小寒'];
+function termJD(year,idx){const target=((idx*30+315)%360+360)%360;
+  let jd=toJD(year,2,4)+idx*(365.2422/12);
+  for(let k=0;k<8;k++){const diff=((sunLong(jd)-target+540)%360)-180;jd-=diff/0.9856;if(Math.abs(diff)<1e-7)break;}
+  return jd;}
+function dayGZidx(y,m,d){const jdn=Math.floor(toJD(y,m,d)+0.5);return ((jdn-2433191)%60+60)%60;} // 1949-10-01甲子
+
+/* ================= 排盘 ================= */
+function paiPan(y,m,d,hourIdx,gender){
+  const jd=toJD(y,m,d,12-8); // 以正午计归属日
+  const cand=[];
+  for(let t=0;t<12;t++){cand.push({t,jd:termJD(y,t)});cand.push({t,jd:termJD(y-1,t)});}
+  cand.sort((a,b)=>a.jd-b.jd);
+  let last=cand[0],next=null;
+  for(const c of cand){if(c.jd<=jd)last=c;else{next=c;break}}
+  const lichun=termJD(y,0);
+  const baziYear=jd>=lichun?y:y-1;
+  const yIdx=((baziYear-1984)%60+60)%60;
+  const yGan=yIdx%10,yZhi=yIdx%12;
+  // 月柱（五虎遁）
+  const mZhi=(last.t+2)%12;
+  const mGan=([2,4,6,8,0][yGan%5]+last.t)%10;
+  // 日柱
+  const dIdx=dayGZidx(y,m,d),dGan=dIdx%10,dZhi=dIdx%12;
+  // 时柱（五鼠遁）
+  let hasHour=hourIdx>=0,hGan=-1,hZhi=-1;
+  if(hasHour){hZhi=hourIdx;hGan=((dGan%5)*2+hZhi)%10;}
+  const pillars=[
+    {name:'年柱',gan:yGan,zhi:yZhi,tenShen:shiShen(dGan,yGan)},
+    {name:'月柱',gan:mGan,zhi:mZhi,tenShen:shiShen(dGan,mGan)},
+    {name:'日柱',gan:dGan,zhi:dZhi,tenShen:'日主'},
+  ];
+  if(hasHour)pillars.push({name:'时柱',gan:hGan,zhi:hZhi,tenShen:shiShen(dGan,hGan)});
+
+  /* --- 旺衰计分 --- */
+  const WT={'比肩':1,'劫财':.9,'偏印':.8,'正印':.9,'食神':-.6,'伤官':-.7,'偏财':-.8,'正财':-.7,'七杀':-1,'正官':-.9};
+  let score=0;
+  pillars.forEach((p,pi)=>{
+    if(pi===2){ // 日柱：日干是自己不算，日支藏干算
+      p.zhi>=0&&CANG[p.zhi].forEach((cg,ci)=>{const w=ci===0?1:(ci===1?.5:.25);score+=WT[shiShen(dGan,cg)]*w;});
+      return;
+    }
+    score+=WT[shiShen(dGan,p.gan)];
+    CANG[p.zhi].forEach((cg,ci)=>{const w=ci===0?1:(ci===1?.5:.25);
+      score+=WT[shiShen(dGan,cg)]*w*(pi===1?2:1);}); // 月支藏干×2
+  });
+  let strength, sTxt;
+  if(score<=-1.2){strength='weak';sTxt='身弱';}
+  else if(score>=1.2){strength='strong';sTxt='身强';}
+  else{strength=score<0?'midw':'mids';sTxt=score<0?'中和偏弱':'中和偏强';}
+  const weakLike=(strength==='weak'||strength==='midw');
+  // 喜忌五行
+  const dw=ganWx(dGan);
+  const yin=(dw+4)%5,bi=dw, shishang=[(dw+1)%5], cai=[(dw+2)%5], guan=[(dw+3)%5];
+  const fav=weakLike?[yin,bi]:[...shishang,...cai,...guan];
+  const avoid=weakLike?[...shishang,...cai,...guan]:[yin,bi];
+
+  /* --- 大运 --- */
+  const yangYear=yGan%2===0;
+  const forward=gender==='男'?yangYear:!yangYear;
+  const gap=forward?(next.jd-jd):(jd-last.jd);
+  const startAge=Math.max(1,Math.round(gap/3));
+  const mIdx60=(()=>{for(let i=0;i<60;i++)if(i%10===mGan&&i%12===mZhi)return i})();
+  const curYear=new Date().getFullYear();
+  const dayuns=[];
+  for(let i=1;i<=8;i++){
+    const idx=((mIdx60+(forward?i:-i))%60+60)%60;
+    const a1=startAge+(i-1)*10, sy=baziYear+startAge+(i-1)*10;
+    dayuns.push({i,gz:GAN[idx%10]+ZHI[idx%12],gan:idx%10,zhi:idx%12,age1:a1,age2:a1+9,sy,ey:sy+9,
+      isCur:curYear>=sy&&curYear<=sy+9});
+  }
+  return {pillars,dGan,dZhi,yGan,yZhi,baziYear,score,strength,sTxt,fav,avoid,weakLike,startAge,forward,dayuns,hasHour,jieName:JIEQI[last.t]};
+}
+
+/* ================= 地支关系 & 神煞 ================= */
+const LIUHE={0:1,1:0,2:11,3:10,4:9,5:8,6:7,7:6,8:5,9:4,10:3,11:2};        // 六合
+const LIUCHONG={0:6,1:7,2:8,3:9,4:10,5:11,6:0,7:1,8:2,9:3,10:4,11:5};      // 六冲
+const XINGHAI={0:7,1:6,2:5,3:4,4:3,5:2,6:1,7:0,8:11,9:10,10:9,11:8};       // 相害
+const XIANGPO={0:9,9:0,3:6,6:3,1:4,4:1,10:7,7:10,2:11,11:2,5:8,8:5};       // 相破
+const SANHE=[[8,0,4],[2,6,10],[5,9,1],[11,3,7]]; // 申子辰(水) 寅午戌(火) 巳酉丑(金) 亥卯未(木)
+function po(a,b){return XIANGPO[a]===b;}
+const LU=[2,3,5,6,5,6,8,9,11,0];            // 禄神：干→支
+const REN=[3,0,6,0,6,0,9,0,0,0];            // 阳刃(阳干有效)
+const WENCHANG=[5,6,8,9,8,9,11,0,2,3];      // 文昌：干→支
+const TAO={0:9,8:9,4:9,2:3,6:3,10:3,5:6,9:6,1:6,11:0,3:0,7:0}; // 桃花：申子辰→酉 寅午戌→卯 巳酉丑→午 亥卯未→子
+const taoHua=z=>TAO[z];
+const YIMA={0:2,8:2,4:2,2:8,6:8,10:8,5:11,9:11,1:11,11:5,3:5,7:5}; // 驿马
+const HUAGAI={0:4,8:4,4:4,2:10,6:10,10:10,5:1,9:1,1:1,11:7,3:7,7:7}; // 华盖：三合局库
+function xunKong(g,z){ // 日柱旬空
+  const idx=(()=>{for(let i=0;i<60;i++)if(i%10===g&&i%12===z)return i})();
+  const start=idx-(idx%10); // 旬首
+  const k1=(start%12+10)%12,k2=(start%12+11)%12; return [k1,k2];
+}
+
+/* ================= 大运分析 ================= */
+function analyzeDayun(p,dy){
+  const {pillars,dGan,dZhi,yGan,yZhi,weakLike,fav,avoid}=p;
+  const favSet=new Set(fav),avoidSet=new Set(avoid);
+  const gWX=ganWx(dy.gan),zWX=zhiWx[dy.zhi];
+  const qianShun=favSet.has(gWX),houShun=favSet.has(zWX);
+  const shiShenG=shiShen(dGan,dy.gan), shiShenZ=shiShen(dGan,CANG[dy.zhi][0]);
+
+  /* 神煞 */
+  const ss=[];
+  if(dy.zhi===LU[dGan])ss.push('禄神');
+  if(REN[dGan]===dy.zhi&&dGan%2===0)ss.push('阳刃');
+  if(dy.zhi===WENCHANG[dGan])ss.push('文昌');
+  if(dy.zhi===taoHua(dZhi)||dy.zhi===taoHua(yZhi))ss.push('桃花星');
+  if(dy.zhi===YIMA[dZhi])ss.push('驿马');
+  if(dy.zhi===HUAGAI[dZhi]||dy.zhi===HUAGAI[yZhi])ss.push('华盖');
+  const kong=xunKong(dGan,dZhi);
+  if(kong.includes(dy.zhi))ss.push('空亡');
+  // 财库：库支藏干含财星五行
+  const caiWX=(ganWx(dGan)+2)%5;
+  if(CANG[dy.zhi].some(cg=>ganWx(cg)===caiWX)&&SANHE.some(g=>g[2]===dy.zhi))ss.push('财库');
+  // 干支关系（日支 > 月支 > 年支 > 时支 优先；同一对支可有多重关系）
+  const rels=[];
+  const checkPillar=(pl,nm)=>{
+    const z=pl.zhi;
+    if(LIUHE[dy.zhi]===z)rels.push(nm+'六合');
+    if(LIUCHONG[dy.zhi]===z&&!(nm==='年支'&&z===pillars[2].zhi))rels.push(nm+'六冲'); // 年支与日支同支时只报日支
+    if(XINGHAI[dy.zhi]===z)rels.push(nm+'相害');
+    if(po(dy.zhi,z))rels.push(nm+'相破');
+  };
+  checkPillar(pillars[2],'日支');checkPillar(pillars[1],'月支');checkPillar(pillars[0],'年支');
+  if(pillars[3])checkPillar(pillars[3],'时支');
+  // 三合/拱合：三支成局，或两支拱局（缺中神）
+  for(const g of SANHE){
+    const all=[dy.zhi,...pillars.map(pl=>pl.zhi)];
+    const uniq=[...new Set(all.filter(z=>g.includes(z)))];
+    if(uniq.length>=3||(uniq.length===2&&!uniq.includes(g[1])))ss.push('支构三合');
+  }
+  ss.push(...rels);
+  // 天克地冲（天克地冲已含六冲，去除重复的单纯六冲）
+  pillars.forEach((pl,pi)=>{
+    const nm=['年柱','月柱','日柱','时柱'][pi];
+    const branchNm=['年支','月支','日支','时支'][pi];
+    const ke=(ganWx(dy.gan)+2)%5===ganWx(pl.gan)||(ganWx(pl.gan)+2)%5===ganWx(dy.gan);
+    if(ke&&LIUCHONG[dy.zhi]===pl.zhi){ss.push(nm+'天克地冲');const k=ss.indexOf(branchNm+'六冲');if(k>=0)ss.splice(k,1);}
+  });
+  // 枭神夺食：运干食神透出、坐支主气偏印（截脚被夺）
+  const dyPianYin=shiShen(dGan,CANG[dy.zhi][0])==='偏印';
+  const hasShiGan=shiShenG==='食神';
+  if(hasShiGan&&dyPianYin)ss.push('枭神夺食');
+  const SS_ORDER=['文昌','桃花星','禄神','阳刃','驿马','华盖','财库','空亡','支构三合','年支六合','月支六合','日支六合','时支六合','日支六冲','月支六冲','年支六冲','时支六冲','日支相害','月支相害','年支相害','时支相害','日支相破','月支相破','年支相破','时支相破','日支相刑','月支相刑','年支相刑','时支相刑','年柱天克地冲','月柱天克地冲','日柱天克地冲','时柱天克地冲','枭神夺食'];
+  const shenSha=[...new Set(ss)].sort((a,b)=>SS_ORDER.indexOf(a)-SS_ORDER.indexOf(b));
+
+  /* 财标签 */
+  const tags=[];
+  const caiGan=GAN.map((_,i)=>i).filter(i=>ganWx(i)===caiWX);
+  const natalCai=pillars.reduce((n,pl,i)=>{
+    let c=n;if(i!==2&&ganWx(pl.gan)===caiWX)c++;
+    CANG[pl.zhi].forEach(cg=>{if(ganWx(cg)===caiWX)c++});
+    return c;},0);
+  const dyCaiGan=ganWx(dy.gan)===caiWX;
+  const dyCaiZhi=CANG[dy.zhi].some(cg=>ganWx(cg)===caiWX);
+  const heCaiCount=pillars.filter((pl,i)=>i!==2&&LIUHE[dy.zhi]===pl.zhi&&ganWx(CANG[pl.zhi][0])===caiWX).length
+    +(LIUHE[dy.zhi]===dZhi&&ganWx(CANG[dZhi][0])===caiWX?1:0);
+  const chongCai=(LIUCHONG[dy.zhi]===dZhi&&ganWx(CANG[dZhi][0])===caiWX)
+    ||pillars.some((pl,i)=>i!==2&&LIUCHONG[dy.zhi]===pl.zhi&&ganWx(CANG[pl.zhi][0])===caiWX);
+  const bothShun=qianShun&&houShun,bothZhi=!qianShun&&!houShun;
+  const xieWX=[(ganWx(dGan)+1)%5,caiWX]; // 食伤与财=泄耗
+  const xieYun=xieWX.includes(gWX)||xieWX.includes(zWX);
+  let caiTag=null;
+  if(heCaiCount>=1&&bothShun)caiTag='进财';
+  else if(chongCai)caiTag=null;
+  else if(bothZhi&&xieYun)caiTag='损耗';
+  else if(dyCaiGan)caiTag=bothShun?'进财':'小财';
+  else if(dyCaiZhi||natalCai>=3&&!bothZhi)caiTag='小财';
+  if(caiTag)tags.push({t:caiTag,c:'hot'});
+
+  /* 桃花标签 */
+  let taoTag=null;
+  const natalHeCaiCount=heCaiCount;
+  if(natalHeCaiCount>=2)taoTag={t:'桃花旺',c:'love'};
+  else if(LIUCHONG[dy.zhi]===dZhi)taoTag={t:'烂桃花',c:'love'};
+  else if(dy.zhi===taoHua(dZhi)||dy.zhi===taoHua(yZhi))taoTag={t:'异性缘',c:'love'};
+  else if((shiShenG==='食神'||shiShenG==='伤官')&&!qianShun)taoTag={t:'烂桃花',c:'love'};
+  else if(CANG[dy.zhi].some(cg=>['食神','伤官'].includes(shiShen(dGan,cg)))&&!houShun)taoTag={t:'烂桃花',c:'love'};
+  if(taoTag)tags.push(taoTag);
+  if(tags.length===0)tags.push({t:'随缘',c:'calm'});
+  else if(tags.length===1)tags.push({t:'随缘',c:'calm'});
+
+  /* 气运总评 */
+  const mood=bothShun?'up':bothZhi?'down':'flat';
+  return {qianShun,houShun,shiShenG,shiShenZ,shenSha,tags,caiTag,taoTag,mood,natalCai,natalHeCaiCount:heCaiCount,chongCai};
+}
+
+/* ================= 白话文案 ================= */
+const SS_MEANING={'禄神':'禄神主衣食俸禄，多为进益之地','阳刃':'阳刃刚猛，成败皆烈，宜稳忌赌','文昌':'文昌主聪明利学，考试文书皆利','桃花星':'桃花星动，人缘异性缘转旺','驿马':'驿马主奔波走动、外出远行','华盖':'华盖主孤高艺术、宗教哲思之缘','空亡':'空亡之地，用力多虚，谋事贵在落实','财库':'财库逢运，攒下的钱要落袋为安','支构三合':'地支三合成局，贵人成事之力强','支半合':'地支半合，有贵人半臂之力','枭神夺食':'枭神夺食，才华输出易被打断，防小人是非'};
+function plainText(p,dy,a){
+  const hasHour=p.hasHour, weak=p.weakLike;
+  const moodTxt=a.mood==='up'?'气运上扬':a.mood==='down'?'气运承压':'平稳过渡';
+  const blocks=[];
+  /* 财富 */
+  let caiTxt;
+  const totalCai=a.natalCai+(a.caiTag?1:0);
+  if(totalCai>=4){
+    caiTxt=a.mood==='down'
+      ?`这十年全局财星偏多（共${totalCai}个），机会和诱惑都不少，但${weak?'日主身弱压不住财——看得见、摸得着、拿不稳':'进财虽多、留财不易'}。财一多，感情、人际、花销也跟着多：小财可捡、大注莫上，替人担保、借贷扩张这类事尤其要绕开。`
+      :`这十年全局财星偏多（共${totalCai}个），好在这步运帮身${weak?'的五行到位，担财的底气比前些年足':'有力、财来能任'}：过去看得见、摸不着的财，这十年开始有机会真正抓在手里。只做看得懂的事，赚认知内的钱。`;
+  }
+  else if(a.natalHeCaiCount>=1&&a.mood==='up')caiTxt=`这十年财路相对敞亮${weak?'：帮身的五行到位，担财的底气比前些年足':'：身旺担财，财来能接'}，机会从"看得见摸不着"开始有机会真正落袋。宜把主业做深，顺手的小机会也别嫌少——集腋成裘。`;
+  else if(a.caiTag==='进财')caiTxt=`这十年财星得用${weak?'，且帮身之力到位，担得起来':'，身旺能任，财来能留'}，是适合主动进取求财的一步。正路经营、深耕本业最佳，横财不贪，落袋方安。`;
+  else if(a.caiTag==='损耗')caiTxt=`这十年走的是泄耗路线，钱像过手的水——不是不进，是留不住。人情往来、健康开销、冲动消费都容易变多。把"该不该花"多过一遍脑子，比想着多赚更重要。`;
+  else if(a.caiTag==='小财')caiTxt=`这十年财星偏多（全局共${totalCai}个财星），机会和诱惑都不少，但${weak?'日主'+p.sTxt.slice(-2)+'压不太住财——看得见、摸得着、拿不稳':'进财节奏偏碎'}。宜稳不宜贪：小财可以捡，大注别上头，替人担保、借贷扩张这类事尤其要绕开。`;
+  else if(a.chongCai)caiTxt=`这十年财星被冲，进财的同时破财的口子也在：投资、合伙、大额支出的决策都容易被情绪推着走。捂紧本金、分散风险，过了这十年再谈扩张。`;
+  else caiTxt=`这十年财星不是主角，谈不上大进大出，维持既有节奏即可。与其追着钱跑，不如把本事和身体攒厚——财在往后几步。`;
+  blocks.push({icon:'💰',h:'财富'+(totalCai>=4?' · 多财大运':''),t:caiTxt,mood:a.caiTag==='进财'&&a.mood==='up'?'up':a.caiTag==='损耗'||a.mood==='down'?'down':'flat'});
+  /* 事业（按运干十神） */
+  const SS={};
+  SS['正印']=`日子偏稳，靠资历、证书、体制/平台这条路走得比前几步顺，长辈与上级也更愿意搭手。是不是真拿得下，还看自己有没有去考、去办、去争取。`;
+  SS['偏印']=`偏门手艺、专业深度、研究考证的路子走得通。心思容易重、想得多，适合把注意力收窄到一两门硬本事上——冷门专业反而可能是金饭碗。`;
+  SS['正官']=`名分、职务、规矩成为关键词，有机会获得正式任命或进入更规范的体系。压力随之而来，但属于"长本事的压力"；按规矩出牌比剑走偏锋划算。`;
+  SS['七杀']=`压力陡增的一步：竞争、考核、责任一起压过来。硬扛过去就是往上走的台阶，扛不住则容易内耗。别单打独斗——学会借势、抱团、找靠山。`;
+  SS['正财']=`以财为务：靠职位、积累与稳健经营进财。这十年的重心可以放在"把事做成钱"上，一分耕耘一分收获，忌投机。`;
+  SS['偏财']=`机会财与人脉财活跃的一步：副业、投资、资源撮合都可能带来进项。但偏财起伏也大，见好就收、不押重注是铁律。`;
+  SS['食神']=`输出与口碑的十年：作品、产品、内容、手艺开始说话，靠才华吃饭的路径打开。注意别贪多嚼不烂，也别把身体熬垮。`;
+  SS['伤官']=`才华外露、锋芒毕现：容易出成绩，也容易祸从口出。适合创意、表达、技术突破，不适合硬碰体制。管住嘴、稳住心，才华才变成资产。`;
+  SS['比肩']=`同场竞技者变多：合伙、同事、同行竞争都会出现。抱团可成事，也易分利——账目、股权、边界提前说清楚，感情归感情、生意归生意。`;
+  SS['劫财']=`劫财主"分"：破财、被借、合伙纠纷的风险上升，异性缘与是非也常伴随。守住本金比追逐收益重要，大额出借与担保格外谨慎。`;
+  let shiTxt=SS[a.shiShenG]||'';
+  if(['正财','偏财','正官','七杀'].includes(a.shiShenG)&&a.mood==='down')
+    shiTxt+=' 这几年机会多在明面上，落定之前都别当作囊中之物。';
+  blocks.push({icon:'💼',h:'事业与职务 · '+a.shiShenG+'大运',t:shiTxt,mood:a.mood==='up'?'up':a.mood==='down'?'down':'flat'});
+  /* 情感 */
+  let aiTxt;
+  if(a.taoTag?.t==='桃花旺')aiTxt=`异性缘明显变旺，社交场合存在感强。单身者机会密集但易挑花眼；有伴者要把边界感立好——桃花旺是双刃剑，用好了是人脉，用不好是是非。`;
+  else if(a.taoTag?.t==='烂桃花')aiTxt=`感情容易起波澜：旧关系松动、露水情缘闪现，来得快去得也快。这十年感情上"慢一拍"反而是护身符，重大承诺多观察一段时间再做。`;
+  else if(a.taoTag?.t==='异性缘')aiTxt=`身边异性出现频率变高，社交与好感度都在线。单身者可以主动一些，缘分多在人群里；有伴者多花心思经营，平淡处见真情。`;
+  else if(a.chongCai&&LIUCHONG[dy.zhi]===p.dZhi)aiTxt=`夫妻宫被冲动，关系里的旧问题容易翻出来：聚少离多、观念分歧或家庭事务交织。这十年感情宜"修"不宜"换"，重大决定避开情绪上头的时候。`;
+  else if(LIUHE[dy.zhi]===p.dZhi)aiTxt=`夫妻宫逢合，感情趋于和顺：领证、添丁、安家这类"绑定"型喜事更容易落定。单身者这十年脱单概率高，且多遇正缘。`;
+  else aiTxt=`感情不是这十年的主旋律，波澜不惊。顺其自然即可——把日子过稳、把自己过好，缘分该来的时候自然会来。`;
+  blocks.push({icon:'♡',h:'情感关系',t:aiTxt,mood:a.taoTag?.t==='烂桃花'?'down':(a.taoTag||LIUHE[dy.zhi]===p.dZhi)?'up':'flat'});
+  return {moodTxt,blocks};
+}
+
+/* ================= 名人档案 ================= */
+const CELEBS=[
+  {n:'黄仁勋',d:'1963-02-17',g:'男',t:'黄仁勋（Jensen Huang）为 NVIDIA 联合创始人兼首席执行官，主导公司从图形处理器向人工智能计算平台转型，被视为全球 AI 浪潮的核心推手之一。'},
+  {n:'乔布斯',d:'1955-02-24',g:'男',t:'史蒂夫·乔布斯为苹果公司联合创始人，先后主导了 Macintosh、iPod、iPhone 与 iPad 的诞生，深刻改变了个人计算与移动互联的形态。'},
+  {n:'比尔·盖茨',d:'1955-10-28',g:'男',t:'比尔·盖茨为微软公司联合创始人，推动了个人计算机软件的普及，后投身全球公共卫生与慈善事业。'},
+  {n:'埃隆·马斯克',d:'1971-06-28',g:'男',t:'埃隆·马斯克为特斯拉与 SpaceX 等公司的创始人或掌门人，以电动车商业化与可回收火箭闻名，同时主导多个前沿科技 ventures。'},
+  {n:'马云',d:'1964-09-10',g:'男',t:'马云为阿里巴巴集团主要创始人，带领公司从 B2B 电商起步，构建了影响中国电商与支付格局的商业生态。'},
+  {n:'马化腾',d:'1971-10-29',g:'男',t:'马化腾为腾讯公司主要创始人，主导推出了 QQ 与微信，深刻改变了中国人的即时通讯与移动互联网生活方式。'},
+  {n:'雷军',d:'1969-12-16',g:'男',t:'雷军为小米集团创始人，以"互联网模式"做手机与生态链产品，近年亦投身智能电动汽车制造。'},
+  {n:'任正非',d:'1944-10-25',g:'男',t:'任正非为华为技术有限公司主要创始人，带领华为成长为全球领先的通信设备与智能终端企业。'},
+  {n:'周杰伦',d:'1979-01-18',g:'男',t:'周杰伦为华语流行乐坛代表性创作歌手，融合中西曲风开创"中国风"潮流，亦涉猎导演、影视与商业。'},
+  {n:'谷爱凌',d:'2003-09-03',g:'女',t:'谷爱凌为自由式滑雪冬奥冠军，同时以斯坦福大学学生与时尚模特身份活跃，被视为新一代体坛偶像。'},
+  {n:'沃伦·巴菲特',d:'1930-08-30',g:'男',t:'沃伦·巴菲特为伯克希尔·哈撒韦董事长，被誉为"奥马哈先知"，是价值投资理念在全球最具影响力的践行者。'},
+  {n:'张一鸣',d:'1983-04-01',g:'男',t:'张一鸣为字节跳动创始人，先后打造今日头条与抖音（TikTok），深刻改变了全球内容分发与短视频行业格局。'},
+];
+
+/* ================= 渲染 ================= */
+const $=id=>document.getElementById(id);
+let gender='男';
+$('gM').onclick=()=>{gender='男';$('gM').classList.add('on');$('gF').classList.remove('on')};
+$('gF').onclick=()=>{gender='女';$('gF').classList.add('on');$('gM').classList.remove('on')};
+function toast(s){const t=$('toast');t.textContent=s;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+
+function render(name,dateStr,hourIdx){
+  const [y,m,d]=dateStr.split('-').map(Number);
+  const p=paiPan(y,m,d,hourIdx,gender);
+  /* 问候 */
+  $('result').style.display='block';
+  $('greeting').style.display='block';
+  $('hiText').textContent=`你好，${name}`;
+  $('hiSub').textContent=`${gender} · ${y}年${m}月${d}日 ${hourIdx>=0?'· '+ZHI[hourIdx]+'时生':'· 按三柱推'} · 农历纪年 ${GAN[p.yGan]}${ZHI[p.yZhi]}年`;
+  /* 名人卡 */
+  const celeb=CELEBS.find(c=>c.d===dateStr&&c.g===gender);
+  $('celebCard').style.display=celeb?'block':'none';
+  if(celeb){$('celebText').textContent=celeb.t;$('celebBday').textContent=`公开档案生日：${celeb.d}（${celeb.g}）`;}
+  /* 三栏 */
+  const st=$('stStrength');st.textContent=p.sTxt;
+  st.className='v '+(p.strength==='weak'?'weak':p.strength==='strong'?'strong':'mid');
+  $('stFav').innerHTML=p.fav.map(w=>`<span class="${WXCLS[w]}">${WX[w]}</span>`).join('、');
+  $('stAvoid').innerHTML=p.avoid.map(w=>`<span class="${WXCLS[w]}">${WX[w]}</span>`).join('、');
+  /* 四柱表 */
+  const cols=p.pillars.map(pl=>`<th>${pl.name}</th>`).join('');
+  const rowTen=p.pillars.map(pl=>`<td class="rss">${pl.tenShen}</td>`).join('');
+  const rowGan=p.pillars.map(pl=>`<td class="gan ${WXCLS[ganWx(pl.gan)]}">${GAN[pl.gan]}${pl.tenShen==='日主'?'<span class="daymark">日主</span>':''}</td>`).join('');
+  const rowZhi=p.pillars.map(pl=>`<td class="zhi ${WXCLS[zhiWx[pl.zhi]]}">${ZHI[pl.zhi]}</td>`).join('');
+  const rowCG=p.pillars.map(pl=>`<td class="cg">${CANG[pl.zhi].map(cg=>`<span class="${WXCLS[ganWx(cg)]}">${GAN[cg]}</span>`).join(' ')}</td>`).join('');
+  const rowNY=p.pillars.map(pl=>`<td class="ny">${nayin(pl.gan,pl.zhi)}</td>`).join('');
+  $('pzTable').innerHTML=`<table class="pz">
+    <tr><td class="lbl"></td>${cols}</tr>
+    <tr><td class="lbl">十神</td>${rowTen}</tr>
+    <tr><td class="lbl">天干</td>${rowGan}</tr>
+    <tr><td class="lbl">地支</td>${rowZhi}</tr>
+    <tr><td class="lbl">藏干</td>${rowCG}</tr>
+    <tr><td class="lbl">纳音</td>${rowNY}</tr>
+  </table>`;
+  $('wxLegend').innerHTML=WX.map((w,i)=>`<span><i style="background:${WXHEX[i]}"></i>${w}</span>`).join('');
+  $('qiYun').innerHTML=`出生后约 <b>${p.startAge} 岁</b> 起运（${p.forward?'顺行':'逆行'}，${p.jieName}后${p.forward?'顺数':'逆数'}至${p.forward?'下一':'上一'}节气折算），行运十载一换。`;
+  $('pzNote').textContent=hourIdx>=0?'四柱俱全 · 按出生时辰排时柱':'按三柱推 · 时辰未知（时柱不计入旺衰与大运参照）';
+  /* 大运 */
+  const cur=p.dayuns.find(dd=>dd.isCur);
+  $('curTag').textContent=cur?`当前：${cur.gz}运`:'';
+  const list=$('dayunList');list.innerHTML='';
+  p.dayuns.forEach(dy=>{
+    const a=analyzeDayun(p,dy);
+    const pt=plainText(p,dy,a);
+    const item=document.createElement('div');
+    item.className='dy-item'+(dy.isCur?' cur':'');
+    item.innerHTML=`
+      <div class="dy-top">
+        <span class="dy-age">${dy.age1}-${dy.age2}岁</span>
+        <span class="dy-years">${dy.sy}-${dy.ey}</span>
+        ${dy.isCur?'<span class="dy-cur-badge">当前所处</span>':''}
+        <span class="dy-arrow">›</span>
+      </div>
+      <div class="dy-mid">
+        <span class="dy-gz"><span class="${WXCLS[ganWx(dy.gan)]}">${GAN[dy.gan]}</span><span class="${WXCLS[zhiWx[dy.zhi]]}">${ZHI[dy.zhi]}</span></span>
+        <div class="dy-ss"><span>${a.shiShenG}</span><span>${a.shiShenZ}</span></div>
+        <div class="dy-bars">
+          <div class="dy-bar"><div class="b ${a.qianShun?'s':'z'}"></div><div class="t">前五年 ${a.qianShun?'顺':'滞'}</div></div>
+          <div class="dy-bar"><div class="b ${a.houShun?'s':'z'}"></div><div class="t">后五年 ${a.houShun?'顺':'滞'}</div></div>
+        </div>
+      </div>
+      <div class="dy-tags">${a.tags.map(t=>`<span class="${t.c}">${t.t}</span>`).join('')}</div>
+      <div class="dy-shensha">${a.shenSha.length?a.shenSha.join(' · '):'运行平顺，无显著神煞'}</div>
+      <div class="dy-detail">
+        <div class="dt-head">白话解盘 <span class="dt-badge ${a.mood}">${pt.moodTxt}</span></div>
+        ${pt.blocks.map(b=>`<div class="dt-block ${b.mood}"><h4>${b.icon} ${b.h}</h4><p>${b.t}</p></div>`).join('')}
+      </div>`;
+    item.onclick=()=>item.classList.toggle('open');
+    list.appendChild(item);
+    if(dy.isCur)setTimeout(()=>{item.classList.add('open');item.scrollIntoView({block:'center'});},350);
+  });
+  $('result').scrollIntoView({behavior:'smooth'});
+}
+function validate(){
+  const name=$('fName').value.trim();
+  const date=$('fDate').value;
+  if(!name){toast('请输入姓名');$('fName').focus();return null}
+  if(!date){toast('请选择出生日期');$('fDate').focus();return null}
+  return {name,date,hour:parseInt($('fHour').value)};
+}
+$('goBtn').onclick=()=>{
+  const v=validate();if(!v)return;
+  const u=new URL(location.href);u.searchParams.set('n',v.name);u.searchParams.set('g',gender);
+  u.searchParams.set('d',v.date);if(v.hour>=0)u.searchParams.set('h',v.hour);
+  history.replaceState(null,'',u);
+  render(v.name,v.date,v.hour);
+};
+$('againBtn').onclick=()=>{$('formCard').scrollIntoView({behavior:'smooth'});$('fName').focus()};
+/* URL 参数直达 */
+(function(){
+  const q=new URLSearchParams(location.search);
+  const n=q.get('n'),d=q.get('d'),g=q.get('g'),h=q.get('h');
+  if(n&&d&&/^\d{4}-\d{2}-\d{2}$/.test(d)){
+    $('fName').value=n;$('fDate').value=d;
+    if(h!==null&&h>=0&&h<12)$('fHour').value=h;
+    if(g==='女'){gender='女';$('gF').classList.add('on');$('gM').classList.remove('on')}
+    render(n,d,h!==null?parseInt(h):-1);
+  }
+})();
+</script>
+</body>
+</html>
